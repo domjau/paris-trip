@@ -129,6 +129,19 @@ section.info li{margin:5px 0}
 .bingo button.hit{background:#e3f2ea;border-color:#2f7d5b}
 .bingo button.hit:after{content:"✓";position:absolute;top:4px;right:8px;font:800 18px Inter;color:#2f7d5b}
 .reset{background:none;border:0;color:#a49a88;font-size:12px;text-decoration:underline;cursor:pointer;margin:6px 0}
+.tbtns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.tbtn{font:600 13px Inter;border-radius:999px;padding:6px 11px;border:1px solid #cfc6b4;background:#fff;color:#1d2433;cursor:pointer}
+.tbtn.go{background:#1f3a5f;border-color:#1f3a5f;color:#fff}
+.tbtn.on{background:#e3f2ea;border-color:#7cc29b;color:#22603f}
+.tbtn.ghost{color:#8a8f9c;border-style:dashed}
+.time .plan{color:#a49a88;font-weight:500}
+.time .late{color:#c8423b}.time .early{color:#2f7d5b}.time .ok{color:#2f7d5b}.time .skipped{color:#8a8f9c}
+.warn{font-size:13px;background:#fde7e4;color:#8c2a23;border-radius:10px;padding:6px 10px;margin:6px 0}
+.stop.skip .card{opacity:.45}
+.bn{background:#fff;border:2px solid #e2b34a;border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:14.5px}
+.bn.bad{border-color:#c8423b}
+.bn ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:#8c2a23}
+.banner:empty{display:none}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 </style>
 </head>
@@ -468,11 +481,10 @@ function mapSVG(stops){
   ${dots}</svg>`;
 }
 
-function cardInner(s, id, done, buttons){
+function cardInner(s, id, done, buttons, head){
   const tags=(s.tags||[]).map(t=>`<span class="tag ${t}">${TAGS[t]}</span>`).join("");
   return `<div class="card">
-    <label class="done-toggle"><input type="checkbox" ${done?"checked":""}> done</label>
-    <div class="time">${s.t}</div>
+    ${head!==undefined?head:`<label class="done-toggle"><input type="checkbox" ${done?"checked":""}> done</label><div class="time">${s.t}</div>`}
     <h3>${STK[id]?STK[id].e+" ":""}${s.h}</h3>
     ${s.where?`<div class="where">📍 ${s.where}</div>`:""}
     ${tags?`<div>${tags}</div>`:""}
@@ -492,26 +504,139 @@ function bindChecks(el){
   }));
 }
 
+/* ---------- live timing ---------- */
+const DAYDATE={thu:"2026-11-12",fri:"2026-11-13"};
+const RULES={
+ "thu-3":{notBefore:"11:45"},
+ "thu-4":{endBy:"17:00",msg:"The Luxembourg Gardens close at about 17:00 in November. Shorten the visit or skip it."},
+ "thu-6":{startBy:"17:05",msg:"It'll be getting dark. A night photo still works, and the tower sparkles on the hour."},
+ "thu-7":{startBy:"19:00",msg:"Getting late for the cruise. Check the last sightseeing departure at the pier."},
+ "thu-9":{notBefore:"19:30"},
+ "fri-1":{notBefore:"10:00",startBy:"10:30",msg:"Your Louvre ticket is for 10:00."},
+ "fri-2":{notBefore:"11:45"},
+ "fri-6":{startBy:"16:45",msg:"Père Lachaise closes at 17:30, so there's little time left. Consider skipping it and going home early."},
+ "fri-8":{notBefore:"19:00"}
+};
+const toMin=t=>{const [h,m]=t.split(":").map(Number);return h*60+m;};
+const fmt=m=>{m=Math.round(m);return String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(((m%60)+60)%60).padStart(2,"0");};
+const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60;};
+const todayStr=()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");};
+const tget=(k)=>{const v=store(k);return v===null||v===""||v===undefined?null:Number(v);};
+
+function computeDay(key){
+  const st=DAYS[key].stops, live=todayStr()===DAYDATE[key], now=nowMin();
+  const P=st.map(s=>toMin(s.t)), out=[];
+  let cur=null, lastRec=-1, liveDone=false;
+  st.forEach((s,j)=>{ const id=key+"-"+j; if(tget("arr-"+id)!==null||tget("done-t-"+id)!==null||store("skip-"+id)==="1") lastRec=j; });
+  st.forEach((s,j)=>{
+    const id=key+"-"+j, R=RULES[id]||{};
+    const dur = j<st.length-1 ? P[j+1]-P[j] : 75;
+    const arr=tget("arr-"+id), dn=tget("done-t-"+id), sk=store("skip-"+id)==="1";
+    let start = arr!==null ? arr : (cur===null ? P[j] : cur);
+    if(arr===null && R.notBefore) start=Math.max(start,toMin(R.notBefore));
+    let state = sk?"skip": dn!==null?"done": arr!==null?"here": (j<lastRec?"passed":"todo");
+    if(live && !liveDone && (state==="todo"||state==="here")){ if(state==="todo") start=Math.max(start,now); liveDone=true; }
+    let end;
+    if(sk) end=start;
+    else if(dn!==null) end=dn;
+    else if(state==="here" && live) end=Math.max(start+dur, now);
+    else end=start+dur;
+    let warn=null;
+    if(!sk && state!=="done" && state!=="passed"){
+      if(R.startBy && start>toMin(R.startBy)+0.5) warn=R.msg;
+      if(R.endBy && end>toMin(R.endBy)+0.5) warn=R.msg;
+    }
+    out.push({start,end,plan:P[j],arr,dn,sk,state,warn});
+    cur=end;
+  });
+  return out;
+}
+
+function timeHead(key,j,s,T){
+  const id=key+"-"+j, delta=Math.round(T.start-T.plan);
+  let t;
+  if(T.state==="skip") t=`<s>${s.t}</s> <span class="skipped">skipped</span>`;
+  else if(T.state==="done") t=`${fmt(T.arr!==null?T.arr:T.start)}–${fmt(T.dn)} <span class="ok">✓ done</span>`;
+  else if(T.state==="here") t=`📍 arrived ${fmt(T.arr)}`;
+  else if(T.state==="passed") t=`<s>${s.t}</s>`;
+  else if(Math.abs(delta)>=5) t=`~${fmt(T.start)} <s class="plan">${s.t}</s> <span class="${delta>0?"late":"early"}">${delta>0?"+":"−"}${Math.abs(delta)} min</span>`;
+  else t=s.t;
+  let btns="";
+  if(s.k!=="move"){
+    const first=j===0&&s.k==="home";
+    if(T.state==="skip") btns=`<button class="tbtn" data-act="skip" data-id="${id}">↩︎ Undo skip</button>`;
+    else if(first) btns = T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">🚪 Left ${fmt(T.dn)} ✎</button>` : `<button class="tbtn go" data-act="done" data-id="${id}">🚪 We've left</button>`;
+    else{
+      btns += T.arr!==null ? `<button class="tbtn on" data-act="edit-arr" data-id="${id}">📍 ${fmt(T.arr)} ✎</button>` : `<button class="tbtn go" data-act="arr" data-id="${id}">📍 Arrived</button>`;
+      btns += T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">✓ ${fmt(T.dn)} ✎</button>` : `<button class="tbtn" data-act="done" data-id="${id}">✓ Done</button>`;
+      if(T.state!=="done") btns += `<button class="tbtn ghost" data-act="skip" data-id="${id}">⏭ Skip</button>`;
+    }
+  }
+  return `<div class="time">${t}</div>${btns?`<div class="tbtns">${btns}</div>`:""}${T.warn?`<div class="warn">⚠️ ${T.warn}</div>`:""}`;
+}
+
 function render(key){
   const D=DAYS[key], el=document.getElementById("day-"+key);
-  let n=0;
-  const items=D.stops.map((s,i)=>{
+  el.innerHTML=`<div class="summary"><h2>${D.title}</h2><p>${D.blurb}</p>
+    <div class="chips">${D.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} Whole day in Google Maps</a></div></div>
+    <div class="map"><div class="lmap" id="lmap-${key}">${window.L?"":mapSVG(D.stops)}${window.L?'<button class="locate" data-locate="'+key+'">◎ Where am I?</button>':""}</div><div class="cap">Tap a pin for directions. Tap "History & stories" on any stop.</div></div>
+    <div class="banner" id="bn-${key}"></div>
+    <ol class="timeline" id="tl-${key}"></ol>`;
+  renderTimeline(key);
+}
+
+function renderTimeline(key){
+  const D=DAYS[key], T=computeDay(key), tl=document.getElementById("tl-"+key); if(!tl) return;
+  let n=0, nextJ=-1;
+  T.forEach((x,j)=>{ if(nextJ<0 && D.stops[j].k!=="move" && (x.state==="todo"||x.state==="here")) nextJ=j; });
+  tl.innerHTML=D.stops.map((s,i)=>{
     const label = s.k==="move" ? "→" : (s.k==="home"?"⌂":++n);
-    const id=key+"-"+i, done=store("done-"+id)==="1";
+    const id=key+"-"+i, x=T[i];
+    const cls=(x.state==="done"||x.state==="passed")?" done":x.state==="skip"?" skip":"";
     const buttons=`<div class="btnrow">
       <a class="btn primary" href="${navURL(s.p)}" target="_blank" rel="noopener">${ICON_NAV} Directions</a>
       <a class="btn" href="${placeURL(s.p)}" target="_blank" rel="noopener">${ICON_PIN} Map</a>
       ${s.louvre?`<button class="btn gold" data-goto="louvre">🏛 Louvre guide</button>`:""}
     </div>`;
-    return `<li class="stop ${s.k}${done?" done":""}" data-id="${id}" data-t="${s.t}"><div class="dot">${label}</div>${cardInner(s,id,done,buttons)}</li>`;
+    return `<li class="stop ${s.k}${cls}${i===nextJ?" now":""}" data-id="${id}"><div class="dot">${label}</div>${cardInner(s,id,false,buttons,timeHead(key,i,s,x))}</li>`;
   }).join("");
-  el.innerHTML=`<div class="summary"><h2>${D.title}</h2><p>${D.blurb}</p>
-    <div class="chips">${D.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} Whole day in Google Maps</a></div></div>
-    <div class="map"><div class="lmap" id="lmap-${key}">${window.L?"":mapSVG(D.stops)}${window.L?'<button class="locate" data-locate="'+key+'">◎ Where am I?</button>':""}</div><div class="cap">Tap a pin for directions. Tap "History & stories" on any stop.</div></div>
-    <ol class="timeline">${items}</ol>`;
-  bindChecks(el);
+  // banner
+  const bn=document.getElementById("bn-"+key), any=T.some(x=>x.arr!==null||x.dn!==null||x.sk), live=todayStr()===DAYDATE[key];
+  if(!any && !live){ bn.innerHTML=""; return; }
+  const last=T[T.length-1], warns=T.map((x,j)=>x.warn?`<li>${D.stops[j].h}: ${x.warn}</li>`:"").join("");
+  let msg;
+  if(nextJ<0) msg=`🎉 All done for today. Bravo!`;
+  else{
+    const d=Math.round(T[nextJ].start-T[nextJ].plan), nx=D.stops[nextJ];
+    const status = d>=10?`⏱️ Running about <b>${d} min</b> behind plan`: d<=-10?`🚀 <b>${-d} min</b> ahead of plan`:`✅ Roughly on schedule`;
+    msg=`${status}<br>Next: <b>${nx.h}</b> at ~${fmt(T[nextJ].start)} · Last stop ~${fmt(last.start)}${d>=20?`<br><small>Tip: tap ⏭ Skip on a stop to catch up. Later times update automatically.</small>`:""}`;
+  }
+  bn.innerHTML=`<div class="bn ${warns?"bad":""}">${msg}${warns?`<ul>${warns}</ul>`:""}<div style="text-align:right"><button class="reset" data-reset="${key}">Reset timings</button></div></div>`;
 }
+
+function setT(k,v){ store(k, v===null?"":String(v)); }
+function askTime(label,cur){
+  let v; try{ v=prompt(label+" (HH:MM). Leave empty to undo.", fmt(cur)); }catch(e){ return undefined; }
+  if(v===null) return undefined; v=v.trim(); if(v==="") return null;
+  const m=v.match(/^(\d{1,2})[:.h]?(\d{2})$/); if(!m) return undefined; return Number(m[1])*60+Number(m[2]);
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"), r=e.target.closest("[data-reset]");
+  if(r){ const key=r.dataset.reset;
+    if(!r.dataset.sure){ r.dataset.sure=1; r.textContent="Tap again to clear all arrived/done times"; return; }
+    DAYS[key].stops.forEach((s,j)=>{const id=key+"-"+j; setT("arr-"+id,null); setT("done-t-"+id,null); store("skip-"+id,"0");});
+    renderTimeline(key); return; }
+  if(!b) return;
+  const id=b.dataset.id, key=id.split("-")[0], act=b.dataset.act, now=Math.round(nowMin());
+  if(act==="arr") setT("arr-"+id, now);
+  else if(act==="done"){ setT("done-t-"+id, now); if(STK[id] && store("stk-"+id)!=="1") setTimeout(()=>openMission(id),250); }
+  else if(act==="skip") store("skip-"+id, store("skip-"+id)==="1"?"0":"1");
+  else if(act==="edit-arr"){ const v=askTime("Arrived at", tget("arr-"+id)); if(v!==undefined) setT("arr-"+id,v); }
+  else if(act==="edit-done"){ const v=askTime("Done at", tget("done-t-"+id)); if(v!==undefined) setT("done-t-"+id,v); }
+  renderTimeline(key);
+});
+setInterval(()=>{ ["thu","fri"].forEach(k=>{ if(todayStr()===DAYDATE[k]) renderTimeline(k); }); },60000);
 
 function renderLouvre(){
   const el=document.getElementById("day-louvre");
@@ -598,12 +723,6 @@ window.addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(doc
   const now=new Date(); const ds=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
   const key = document.getElementById("day-"+h) ? h : (ds==="2026-11-13" ? "fri" : "thu");
   show(key);
-  const today = ds==="2026-11-12"?"thu":ds==="2026-11-13"?"fri":null;
-  if(today){
-    const mins=now.getHours()*60+now.getMinutes(); let cur=null;
-    document.querySelectorAll("#day-"+today+" .stop").forEach(li=>{const [a,b]=li.dataset.t.split(":").map(Number); if(a*60+b<=mins) cur=li;});
-    if(cur) cur.classList.add("now");
-  }
 })();
 </script>
 </body>
