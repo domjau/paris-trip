@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+ <defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#14254a"/><stop offset=".6" stop-color="#2c2a5c"/><stop offset="1" stop-color="#4a2f5e"/>
+  </linearGradient>
+  <radialGradient id="glow" cx=".5" cy=".55" r=".55">
+   <stop offset="0" stop-color="#ffcf7a" stop-opacity=".38"/><stop offset="1" stop-color="#ffcf7a" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="moonGlow" cx=".5" cy=".5" r=".5">
+   <stop offset=".45" stop-color="#fff3d6" stop-opacity=".55"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#fff0c2"/><stop offset=".45" stop-color="#f2c065"/><stop offset="1" stop-color="#c98a2b"/>
+  </linearGradient>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#1d3566"/><stop offset="1" stop-color="#0f1d3d"/>
+  </linearGradient>
+  <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#f2c065" stop-opacity=".75"/><stop offset="1" stop-color="#f2c065" stop-opacity="0"/>
+  </linearGradient>
+ </defs>
+ <rect width="1024" height="1024" fill="url(#sky)"/>
+ <circle cx="512" cy="560" r="520" fill="url(#glow)"/>
+ <!-- stars -->
+ <g fill="#fff6dc">
+  <circle cx="150" cy="170" r="5"/><circle cx="260" cy="95" r="3.5"/><circle cx="105" cy="360" r="3"/>
+  <circle cx="330" cy="250" r="3"/><circle cx="905" cy="430" r="4"/><circle cx="640" cy="120" r="3"/>
+  <circle cx="880" cy="110" r="3.5"/><circle cx="200" cy="520" r="2.5"/>
+ </g>
+ <!-- moon -->
+ <circle cx="790" cy="245" r="150" fill="url(#moonGlow)"/>
+ <circle cx="790" cy="245" r="72" fill="#fff1cf"/>
+ <circle cx="822" cy="225" r="64" fill="#2a2a5a" opacity=".0"/>
+ <!-- water -->
+ <rect y="868" width="1024" height="156" fill="url(#water)"/>
+ <path d="M300 880 L724 880 L640 1024 L384 1024 Z" fill="url(#refl)" opacity=".55"/>
+ <g stroke="#f7d58f" stroke-width="7" stroke-linecap="round" opacity=".7">
+  <line x1="420" y1="915" x2="604" y2="915"/><line x1="450" y1="950" x2="574" y2="950"/><line x1="476" y1="985" x2="548" y2="985"/>
+ </g>
+ <g stroke="#7f9fd6" stroke-width="5" stroke-linecap="round" opacity=".35">
+  <line x1="80" y1="925" x2="230" y2="925"/><line x1="800" y1="925" x2="950" y2="925"/><line x1="130" y1="975" x2="250" y2="975"/><line x1="780" y1="975" x2="900" y2="975"/>
+ </g>
+ <!-- Eiffel tower -->
+ <g fill="url(#gold)">
+  <rect x="507" y="78" width="10" height="70" rx="4"/>
+  <path d="M497 146 H527 L560 332 H464 Z"/>
+  <rect x="438" y="322" width="148" height="24" rx="6"/>
+  <path d="M468 346 H556 Q570 450 612 556 H412 Q454 450 468 346 Z"/>
+  <rect x="380" y="548" width="264" height="30" rx="7"/>
+  <path d="M416 578 H608 Q652 748 812 880 H700 Q616 750 512 738 Q408 750 324 880 H212 Q372 748 416 578 Z"/>
+  <rect x="196" y="868" width="632" height="14" rx="7"/>
+ </g>
+ <!-- lattice -->
+ <g stroke="#1e2a52" stroke-opacity=".38" stroke-width="5" fill="none" stroke-linecap="round">
+  <path d="M503 175 L521 232 M521 175 L503 232 M496 240 L528 300 M528 240 L496 300"/>
+  <path d="M482 372 L542 452 M542 372 L482 452 M470 465 L554 540 M554 465 L470 540"/>
+  <path d="M436 600 L470 690 M588 600 L554 690 M470 600 L436 690 M554 600 L588 690"/>
+ </g>
+ <path d="M512 738 Q470 742 440 770" stroke="#fff3cf" stroke-opacity=".35" stroke-width="4" fill="none"/>
+ <!-- sparkles -->
+ <g fill="#fff8e1">
+  <path d="M640 430 l10 -30 l10 30 l30 10 l-30 10 l-10 30 l-10 -30 l-30 -10 z"/>
+  <path d="M360 300 l7 -20 l7 20 l20 7 l-20 7 l-7 20 l-7 -20 l-20 -7 z"/>
+  <path d="M700 640 l6 -17 l6 17 l17 6 l-17 6 l-6 17 l-6 -17 l-17 -6 z" opacity=".85"/>
+  <path d="M318 520 l5 -14 l5 14 l14 5 l-14 5 l-5 14 l-5 -14 l-14 -5 z" opacity=".8"/>
+ </g>
+</svg>
