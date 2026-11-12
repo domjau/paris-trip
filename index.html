@@ -142,21 +142,25 @@ section.info li{margin:5px 0}
 .bn.bad{border-color:#c8423b}
 .bn ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:#8c2a23}
 .banner:empty{display:none}
+.langs{display:flex;gap:6px;justify-content:flex-end;margin-bottom:6px}
+.lang{font:600 12.5px Inter;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;cursor:pointer;color:var(--ink)}
+.lang.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Paris <span>en famille</span></h1>
-  <p class="sub">Thursday 12 &amp; Friday 13 November 2026 · from our place in the 12e · Metro, bus &amp; on foot</p>
+  <div class="langs" id="langs"></div>
+  <h1 id="h1">Paris <span>en famille</span></h1>
+  <p class="sub" id="sub"></p>
 </header>
 
 <nav class="tabs" role="tablist">
-  <button class="tab" role="tab" data-day="thu" aria-selected="true">🗼 Thu<small>Notre-Dame · Eiffel</small></button>
-  <button class="tab" role="tab" data-day="fri" aria-selected="false">🏛️ Fri<small>Louvre · gardens</small></button>
-  <button class="tab" role="tab" data-day="louvre" aria-selected="false">🖼️ Louvre<small>Route inside</small></button>
-  <button class="tab" role="tab" data-day="stickers" aria-selected="false">⭐ Kids<small id="tabcount">Sticker book</small></button>
-  <button class="tab" role="tab" data-day="info" aria-selected="false">ℹ️ Info<small>Tips</small></button>
+  <button class="tab" role="tab" data-day="thu" aria-selected="true"><span data-ui="tabThu"></span><small data-ui="tabThuS"></small></button>
+  <button class="tab" role="tab" data-day="fri" aria-selected="false"><span data-ui="tabFri"></span><small data-ui="tabFriS"></small></button>
+  <button class="tab" role="tab" data-day="louvre" aria-selected="false"><span data-ui="tabLou"></span><small data-ui="tabLouS"></small></button>
+  <button class="tab" role="tab" data-day="stickers" aria-selected="false"><span data-ui="tabKids"></span><small id="tabcount"></small></button>
+  <button class="tab" role="tab" data-day="info" aria-selected="false"><span data-ui="tabInfo"></span><small data-ui="tabInfoS"></small></button>
 </nav>
 
 <main class="wrap">
@@ -164,7 +168,37 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
   <div class="day" id="day-fri"></div>
   <div class="day" id="day-louvre"></div>
   <div class="day" id="day-stickers"></div>
-  <div class="day" id="day-info">
+  <div class="day" id="day-info"></div>
+</main>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<footer id="footer"></footer>
+
+<script src="i18n/lt.js"></script>
+<script src="i18n/sgs.js"></script>
+<script src="i18n/es.js"></script>
+<script>
+const UI_EN={
+ title:"Paris <span>en famille</span>",
+ sub:"Thursday 12 &amp; Friday 13 November 2026 · from our place in the 12e · Metro, bus &amp; on foot",
+ tabThu:"🗼 Thu", tabThuS:"Notre-Dame · Eiffel", tabFri:"🏛️ Fri", tabFriS:"Louvre · gardens", tabLou:"🖼️ Louvre", tabLouS:"Route inside", tabKids:"⭐ Kids", tabInfo:"ℹ️ Info", tabInfoS:"Tips",
+ footer:"Times are a guide. Directions open Google Maps from wherever you are. Ticks are saved on this device only.",
+ directions:"Directions", map:"Map", louvreGuide:"🏛 Louvre guide", wholeDay:"Whole day in Google Maps", whereAmI:"◎ Where am I?", locating:"Locating…", locBlocked:"Location blocked",
+ mapCap:"Tap a pin for directions. Tap “History & stories” on any stop.", history:"History & stories", done:"done",
+ tagBook:"Book ahead", tagFree:"Free", tagKid:"Kids love it", tagNap:"Nap time", tagOpt:"Optional",
+ stkMission:"⭐ Sticker mission", stkGot:"✅ Sticker collected", stickersN:"{n} / {t} stickers",
+ alreadyHave:"You already have this sticker! 🎉", mission:"Mission:", weDidIt:"🎉 We did it!", later:"Later", close:"Close",
+ newSticker:"New sticker!", inBook:"<b>{name}</b> is in your sticker book.", levelUp:"🎊 LEVEL UP! You are now", collectedOf:"{n} of {t} stickers collected", seeStickers:"See my stickers ⭐", keepExploring:"Keep exploring",
+ lvlLine:"{n} of {t} stickers", moreToBecome:"{k} more to become {lvl}", collectedAll:"You collected everything! 🎉",
+ thuStk:"🗼 Thursday stickers", friStk:"🏛️ Friday stickers", louStk:"🖼️ Louvre stickers", bingoTitle:"🔎 Paris Bingo: spot them anywhere!", bingoNote:"Tap a picture when you see it. Each one counts as a sticker!", resetBook:"Start the sticker book again", resetBookSure:"Tap again to really erase all stickers",
+ skipped:"skipped", doneT:"✓ done", arrivedAt:"📍 arrived {t}", weLeft:"🚪 We've left", leftAt:"🚪 Left {t} ✎", arrived:"📍 Arrived", doneBtn:"✓ Done", skip:"⏭ Skip", undoSkip:"↩︎ Undo skip", min:"min",
+ allDone:"🎉 All done for today. Bravo!", behind:"⏱️ Running about <b>{d} min</b> behind plan", ahead:"🚀 <b>{d} min</b> ahead of plan", onTime:"✅ Roughly on schedule", next:"Next", lastStop:"Last stop", tipSkip:"Tip: tap ⏭ Skip on a stop to catch up. Later times update automatically.", resetT:"Reset timings", resetTSure:"Tap again to clear all arrived/done times",
+ askArr:"Arrived at", askDone:"Done at", askHint:"(HH:MM). Leave empty to undo.",
+ louTitle:"Louvre · a 2½-hour family route",
+ louIntro:"This is one loop with no backtracking: start underground in the medieval castle, come up through Egypt and Greece, cross into Denon for the Victory, Mona Lisa and Napoleon, and finish near Café Marly. Have a snack break whenever the kids need it, and drop anything marked “Optional”.",
+ louChip1:"10:00 → ~12:20", louChip2:"Levels −1, 0, 1 only", louChip3:"Stroller OK, lifts",
+ louSully:"Castle moat (−1), Sphinx (−1), Egypt (0), Venus (0)", louDenon:"Winged Victory, Apollo, Mona Lisa, Coronation (1)", louRich:"Napoleon III apartments (1), Café Marly exit",
+ louLink:"Today's room openings (louvre.fr)", backFri:"← Back to Friday",
+ info:`
     <section class="info">
       <h2>Weather</h2>
       <p>Dry both days, but cold: Thursday about 2 → 10 °C, and Friday starts below freezing (−1 °C) and reaches about 10 °C. Bring hats, gloves and a stroller rain/wind cover. It gets dark about 17:15.</p>
@@ -199,12 +233,13 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
       <h2>A story thread for the kids</h2>
       <p>Napoleon ties the two days together. Thursday: he crowned himself emperor in <b>Notre-Dame</b> and left his hat at <b>Le Procope</b> (peek in, next to the crêperie). Friday: you'll see the giant painting of that coronation at the <b>Louvre</b>, walk where his palace stood in the <b>Tuileries</b> (the Mona Lisa hung in his bedroom), and visit his generals' graves at <b>Père Lachaise</b>, the cemetery he opened. Tell the 4½-year-old to look out for "the little emperor with the big hat".</p>
     </section>
-  </div>
-</main>
-<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
-<footer>Times are a guide. Directions open Google Maps from wherever you are. Ticks are saved on this device only.</footer>
-
-<script>
+`
+};
+const I18N=window.I18N||{};
+const LANGS=[["en","🇬🇧","EN"],["lt","🇱🇹","LT"],["sgs","🐻","ŽEM"],["es","🇪🇸","ES"]];
+let LANG=(function(){let l=null;try{l=localStorage.getItem("lang")}catch(e){} if(l&&(l==="en"||I18N[l]))return l; const n=(navigator.language||"").slice(0,2); return n==="lt"&&I18N.lt?"lt":n==="es"&&I18N.es?"es":"en";})();
+let UI=Object.assign({},UI_EN,(I18N[LANG]||{}).ui||{});
+const t=(k,v)=>{let x=UI[k]!==undefined?UI[k]:UI_EN[k]; if(v) for(const q in v) x=x.split("{"+q+"}").join(v[q]); return x;};
 const HOME = {name:"Home", q:"Picpus metro station, Paris", lat:48.8451, lon:2.4013};
 const P = {
   nd:{q:"Cathédrale Notre-Dame de Paris", lat:48.8530, lon:2.3499},
@@ -396,11 +431,12 @@ const FACTS=[
  "Paris has more than 450 parks and gardens to play in! 🌳"
 ];
 const sget=k=>store(k)==="1";
+const UI_t=(k,v)=>t(k,v);
 function stkCount(){return Object.keys(STK).filter(id=>sget("stk-"+id)).length+BINGO.filter((b,i)=>sget("bingo-"+i)).length;}
 function stkTotal(){return Object.keys(STK).length+BINGO.length;}
 function level(n){let L=LEVELS[0];LEVELS.forEach(l=>{if(n>=l[0])L=l});return L;}
-function stkBtn(id){const got=sget("stk-"+id);return `<div class="btnrow"><button class="btn stk${got?" got":""}" data-stk="${id}">${got?"✅ Sticker collected "+STK[id].e:"⭐ Sticker mission"}</button></div>`;}
-function updTab(){const t=document.getElementById("tabcount"); if(t) t.textContent=stkCount()+" / "+stkTotal()+" stickers";}
+function stkBtn(id){const got=sget("stk-"+id);return `<div class="btnrow"><button class="btn stk${got?" got":""}" data-stk="${id}">${got?t("stkGot")+" "+STK[id].e:t("stkMission")}</button></div>`;}
+function updTab(){const t=document.getElementById("tabcount"); if(t) t.textContent=UI_t("stickersN",{n:stkCount(),t:stkTotal()});}
 
 let actx;
 function ding(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
@@ -413,15 +449,15 @@ function confetti(e){const set=[e,"⭐","🎉","✨","🎈",e];for(let i=0;i<34;
 function closeModal(){document.getElementById("modal").classList.remove("on");}
 function openMission(id){const S=STK[id],got=sget("stk-"+id);
   document.getElementById("mbox").innerHTML=`<div class="big">${S.e}</div><h3>${S.n}</h3>
-   ${got?`<p>You already have this sticker! 🎉</p>`:`<div class="mission">🔍 <b>Mission:</b><br>${S.m}</div>`}
-   <div class="row">${got?`<button class="bigbtn no" data-close>Close</button>`:`<button class="bigbtn yes" data-win="${id}">🎉 We did it!</button><button class="bigbtn no" data-close>Later</button>`}</div>`;
+   ${got?`<p>${t("alreadyHave")}</p>`:`<div class="mission">🔍 <b>${t("mission")}</b><br>${S.m}</div>`}
+   <div class="row">${got?`<button class="bigbtn no" data-close>${t("close")}</button>`:`<button class="bigbtn yes" data-win="${id}">${t("weDidIt")}</button><button class="bigbtn no" data-close>${t("later")}</button>`}</div>`;
   document.getElementById("modal").classList.add("on");}
 function collect(id){store("stk-"+id,"1");const S=STK[id];ding();confetti(S.e);
   const n=stkCount(),L=level(n),prev=level(n-1);
-  document.getElementById("mbox").innerHTML=`<div class="big">${S.e}</div><h3>New sticker!</h3><p><b>${S.n}</b> is in your sticker book.</p>
-   ${L!==prev?`<div class="mission">🎊 LEVEL UP! You are now<br><b style="font-size:20px">${L[1]} ${L[2]}</b></div>`:`<p>${n} of ${stkTotal()} stickers collected</p>`}
-   <div class="row"><button class="bigbtn yes" data-goto="stickers" data-close>See my stickers ⭐</button><button class="bigbtn no" data-close>Keep exploring</button></div>`;
-  document.querySelectorAll(`[data-stk="${id}"]`).forEach(b=>{b.classList.add("got");b.textContent="✅ Sticker collected "+S.e;});
+  document.getElementById("mbox").innerHTML=`<div class="big">${S.e}</div><h3>${t("newSticker")}</h3><p>${t("inBook",{name:S.n})}</p>
+   ${L!==prev?`<div class="mission">${t("levelUp")}<br><b style="font-size:20px">${L[1]} ${L[2]}</b></div>`:`<p>${t("collectedOf",{n:n,t:stkTotal()})}</p>`}
+   <div class="row"><button class="bigbtn yes" data-goto="stickers" data-close>${t("seeStickers")}</button><button class="bigbtn no" data-close>${t("keepExploring")}</button></div>`;
+  document.querySelectorAll(`[data-stk="${id}"]`).forEach(b=>{b.classList.add("got");b.textContent=t("stkGot")+" "+S.e;});
   updTab();}
 let factI=0;
 function renderStickers(){
@@ -430,12 +466,12 @@ function renderStickers(){
   const group=(title,prefix)=>`<div class="book"><h2>${title}</h2><div class="grid">${Object.keys(STK).filter(k=>k.startsWith(prefix)).map(id=>{const g=sget("stk-"+id);
      return `<div class="sticker${g?" got":""}" data-stk="${id}"><span class="e">${STK[id].e}</span>${g?STK[id].n:"?"}</div>`}).join("")}</div></div>`;
   el.innerHTML=`<div class="hero"><div class="pigeon" id="pigeon">🐦</div><div class="bubble" id="fact">${FACTS[factI%FACTS.length]}</div></div>
-   <div class="level"><div class="lv">${L[1]} ${L[2]}</div><div style="color:var(--muted);font-size:13px">${n} of ${T} stickers${nextL?` · ${nextL[0]-n} more to become ${nextL[1]} ${nextL[2]}`:" · You collected everything! 🎉"}</div>
+   <div class="level"><div class="lv">${L[1]} ${L[2]}</div><div style="color:var(--muted);font-size:13px">${t("lvlLine",{n:n,t:T})}${nextL?` · ${t("moreToBecome",{k:nextL[0]-n,lvl:nextL[1]+" "+nextL[2]})}`:" · "+t("collectedAll")}</div>
    <div class="bar"><div style="width:${Math.round(n/T*100)}%"></div></div></div>
-   ${group("🗼 Thursday stickers","thu-")}${group("🏛️ Friday stickers","fri-")}${group("🖼️ Louvre stickers","louvre-")}
-   <div class="book"><h2>🔎 Paris Bingo: spot them anywhere!</h2><div class="bingo">${BINGO.map((b,i)=>`<button class="${sget("bingo-"+i)?"hit":""}" data-bingo="${i}">${b[0]}<small>${b[1]}</small></button>`).join("")}</div>
-   <p style="font-size:12.5px;color:var(--muted)">Tap a picture when you see it. Each one counts as a sticker!</p></div>
-   <div style="text-align:center"><button class="reset" id="reset">Start the sticker book again</button></div>`;
+   ${group(t("thuStk"),"thu-")}${group(t("friStk"),"fri-")}${group(t("louStk"),"louvre-")}
+   <div class="book"><h2>${t("bingoTitle")}</h2><div class="bingo">${BINGO.map((b,i)=>`<button class="${sget("bingo-"+i)?"hit":""}" data-bingo="${i}">${b[0]}<small>${b[1]}</small></button>`).join("")}</div>
+   <p style="font-size:12.5px;color:var(--muted)">${t("bingoNote")}</p></div>
+   <div style="text-align:center"><button class="reset" id="reset">${t("resetBook")}</button></div>`;
 }
 document.addEventListener("click",e=>{
   const t=e.target;
@@ -443,10 +479,33 @@ document.addEventListener("click",e=>{
   const w=t.closest("[data-win]"); if(w){collect(w.dataset.win);return;}
   const bg=t.closest("[data-bingo]"); if(bg){const k="bingo-"+bg.dataset.bingo,on=!sget(k);store(k,on?"1":"0");if(on){ding();confetti(BINGO[bg.dataset.bingo][0]);}renderStickers();updTab();return;}
   if(t.closest("#pigeon")){factI++;document.getElementById("fact").textContent=FACTS[factI%FACTS.length];return;}
-  if(t.id==="reset"){if(t.dataset.sure){Object.keys(STK).forEach(id=>store("stk-"+id,"0"));BINGO.forEach((b,i)=>store("bingo-"+i,"0"));renderStickers();updTab();}else{t.dataset.sure=1;t.textContent="Tap again to really erase all stickers";}return;}
+  if(t.id==="reset"){if(t.dataset.sure){Object.keys(STK).forEach(id=>store("stk-"+id,"0"));BINGO.forEach((b,i)=>store("bingo-"+i,"0"));renderStickers();updTab();}else{t.dataset.sure=1;t.textContent=UI_t("resetBookSure");}return;}
   if(t.closest("[data-close]")||t.id==="modal"){closeModal();if(document.getElementById("day-stickers").classList.contains("on"))renderStickers();}
 });
 
+
+function applyLang(){
+  const T=I18N[LANG]; document.documentElement.lang=LANG==="sgs"?"sgs":LANG;
+  if(T){
+    const put=(dst,src)=>{ if(!src) return; for(const k of ["h","d","kids","tip","story","where"]) if(src[k]!==undefined&&src[k]!==null) dst[k]=src[k]; };
+    for(const k of ["thu","fri"]) if(T.days&&T.days[k]){ const D=T.days[k];
+      if(D.title) DAYS[k].title=D.title; if(D.blurb) DAYS[k].blurb=D.blurb; if(D.chips) DAYS[k].chips=D.chips;
+      (D.stops||[]).forEach((x,j)=>put(DAYS[k].stops[j],x)); }
+    (T.louvre||[]).forEach((x,j)=>put(LOUVRE[j],x));
+    if(T.stk) for(const id in T.stk){ if(STK[id]){ if(T.stk[id].n) STK[id].n=T.stk[id].n; if(T.stk[id].m) STK[id].m=T.stk[id].m; } }
+    (T.bingo||[]).forEach((x,i)=>{ if(BINGO[i]) BINGO[i][1]=x; });
+    (T.levels||[]).forEach((x,i)=>{ if(LEVELS[i]) LEVELS[i][2]=x; });
+    if(T.facts&&T.facts.length){ FACTS.length=0; T.facts.forEach(f=>FACTS.push(f)); }
+    if(T.rules) for(const id in T.rules) if(RULES[id]) RULES[id].msg=T.rules[id];
+  }
+  document.getElementById("h1").innerHTML=t("title");
+  document.getElementById("sub").innerHTML=t("sub");
+  document.getElementById("footer").textContent=t("footer");
+  document.getElementById("day-info").innerHTML=t("info");
+  document.querySelectorAll("[data-ui]").forEach(e=>e.innerHTML=t(e.dataset.ui));
+  document.getElementById("langs").innerHTML=LANGS.filter(l=>l[0]==="en"||I18N[l[0]]).map(l=>`<button class="lang${l[0]===LANG?" on":""}" data-lang="${l[0]}">${l[1]} ${l[2]}</button>`).join("");
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-lang]"); if(!b) return; try{localStorage.setItem("lang",b.dataset.lang)}catch(err){} location.reload();});
 const enc = s => encodeURIComponent(s);
 const navURL = p => `https://www.google.com/maps/dir/?api=1&destination=${enc(p.q)}&travelmode=transit`;
 const placeURL = p => `https://www.google.com/maps/search/?api=1&query=${enc(p.q)}`;
@@ -456,7 +515,7 @@ const dayURL = stops => {
 };
 const ICON_NAV='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4.5 20.3l.7.7L12 18l6.8 3 .7-.7z"/></svg>';
 const ICON_PIN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
-const TAGS={book:"Book ahead",free:"Free",kid:"Kids love it",nap:"Nap time",opt:"Optional"};
+const TAGS={book:t("tagBook"),free:t("tagFree"),kid:t("tagKid"),nap:t("tagNap"),opt:t("tagOpt")};
 
 function store(k,v){try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){return null}}
 
@@ -484,14 +543,14 @@ function mapSVG(stops){
 function cardInner(s, id, done, buttons, head){
   const tags=(s.tags||[]).map(t=>`<span class="tag ${t}">${TAGS[t]}</span>`).join("");
   return `<div class="card">
-    ${head!==undefined?head:`<label class="done-toggle"><input type="checkbox" ${done?"checked":""}> done</label><div class="time">${s.t}</div>`}
+    ${head!==undefined?head:`<label class="done-toggle"><input type="checkbox" ${done?"checked":""}> ${t("done")}</label><div class="time">${s.t}</div>`}
     <h3>${STK[id]?STK[id].e+" ":""}${s.h}</h3>
     ${s.where?`<div class="where">📍 ${s.where}</div>`:""}
     ${tags?`<div>${tags}</div>`:""}
     <p>${s.d}</p>
     ${s.kids?`<div class="kids">🧒 ${s.kids}</div>`:""}
     ${s.tip?`<div class="tip">💡 ${s.tip}</div>`:""}
-    ${s.story?`<details class="story"><summary>History & stories</summary>${s.story}</details>`:""}
+    ${s.story?`<details class="story"><summary>${t("history")}</summary>${s.story}</details>`:""}
     ${STK[id]?stkBtn(id):""}
     ${buttons||""}
   </div>`;
@@ -554,33 +613,33 @@ function computeDay(key){
 
 function timeHead(key,j,s,T){
   const id=key+"-"+j, delta=Math.round(T.start-T.plan);
-  let t;
-  if(T.state==="skip") t=`<s>${s.t}</s> <span class="skipped">skipped</span>`;
-  else if(T.state==="done") t=`${fmt(T.arr!==null?T.arr:T.start)}–${fmt(T.dn)} <span class="ok">✓ done</span>`;
-  else if(T.state==="here") t=`📍 arrived ${fmt(T.arr)}`;
-  else if(T.state==="passed") t=`<s>${s.t}</s>`;
-  else if(Math.abs(delta)>=5) t=`~${fmt(T.start)} <s class="plan">${s.t}</s> <span class="${delta>0?"late":"early"}">${delta>0?"+":"−"}${Math.abs(delta)} min</span>`;
-  else t=s.t;
+  let tt;
+  if(T.state==="skip") tt=`<s>${s.t}</s> <span class="skipped">${t("skipped")}</span>`;
+  else if(T.state==="done") tt=`${fmt(T.arr!==null?T.arr:T.start)}–${fmt(T.dn)} <span class="ok">${t("doneT")}</span>`;
+  else if(T.state==="here") tt=UI_t("arrivedAt",{t:fmt(T.arr)});
+  else if(T.state==="passed") tt=`<s>${s.t}</s>`;
+  else if(Math.abs(delta)>=5) tt=`~${fmt(T.start)} <s class="plan">${s.t}</s> <span class="${delta>0?"late":"early"}">${delta>0?"+":"−"}${Math.abs(delta)} ${UI_t("min")}</span>`;
+  else tt=s.t;
   let btns="";
   if(s.k!=="move"){
     const first=j===0&&s.k==="home";
-    if(T.state==="skip") btns=`<button class="tbtn" data-act="skip" data-id="${id}">↩︎ Undo skip</button>`;
-    else if(first) btns = T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">🚪 Left ${fmt(T.dn)} ✎</button>` : `<button class="tbtn go" data-act="done" data-id="${id}">🚪 We've left</button>`;
+    if(T.state==="skip") btns=`<button class="tbtn" data-act="skip" data-id="${id}">${UI_t("undoSkip")}</button>`;
+    else if(first) btns = T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">${UI_t("leftAt",{t:fmt(T.dn)})}</button>` : `<button class="tbtn go" data-act="done" data-id="${id}">${UI_t("weLeft")}</button>`;
     else{
-      btns += T.arr!==null ? `<button class="tbtn on" data-act="edit-arr" data-id="${id}">📍 ${fmt(T.arr)} ✎</button>` : `<button class="tbtn go" data-act="arr" data-id="${id}">📍 Arrived</button>`;
-      btns += T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">✓ ${fmt(T.dn)} ✎</button>` : `<button class="tbtn" data-act="done" data-id="${id}">✓ Done</button>`;
-      if(T.state!=="done") btns += `<button class="tbtn ghost" data-act="skip" data-id="${id}">⏭ Skip</button>`;
+      btns += T.arr!==null ? `<button class="tbtn on" data-act="edit-arr" data-id="${id}">📍 ${fmt(T.arr)} ✎</button>` : `<button class="tbtn go" data-act="arr" data-id="${id}">${UI_t("arrived")}</button>`;
+      btns += T.dn!==null ? `<button class="tbtn on" data-act="edit-done" data-id="${id}">✓ ${fmt(T.dn)} ✎</button>` : `<button class="tbtn" data-act="done" data-id="${id}">${UI_t("doneBtn")}</button>`;
+      if(T.state!=="done") btns += `<button class="tbtn ghost" data-act="skip" data-id="${id}">${UI_t("skip")}</button>`;
     }
   }
-  return `<div class="time">${t}</div>${btns?`<div class="tbtns">${btns}</div>`:""}${T.warn?`<div class="warn">⚠️ ${T.warn}</div>`:""}`;
+  return `<div class="time">${tt}</div>${btns?`<div class="tbtns">${btns}</div>`:""}${T.warn?`<div class="warn">⚠️ ${T.warn}</div>`:""}`;
 }
 
 function render(key){
   const D=DAYS[key], el=document.getElementById("day-"+key);
   el.innerHTML=`<div class="summary"><h2>${D.title}</h2><p>${D.blurb}</p>
     <div class="chips">${D.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} Whole day in Google Maps</a></div></div>
-    <div class="map"><div class="lmap" id="lmap-${key}">${window.L?"":mapSVG(D.stops)}${window.L?'<button class="locate" data-locate="'+key+'">◎ Where am I?</button>':""}</div><div class="cap">Tap a pin for directions. Tap "History & stories" on any stop.</div></div>
+    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} ${t("wholeDay")}</a></div></div>
+    <div class="map"><div class="lmap" id="lmap-${key}">${window.L?"":mapSVG(D.stops)}${window.L?'<button class="locate" data-locate="'+key+'">'+t("whereAmI")+'</button>':""}</div><div class="cap">${t("mapCap")}</div></div>
     <div class="banner" id="bn-${key}"></div>
     <ol class="timeline" id="tl-${key}"></ol>`;
   renderTimeline(key);
@@ -595,9 +654,9 @@ function renderTimeline(key){
     const id=key+"-"+i, x=T[i];
     const cls=(x.state==="done"||x.state==="passed")?" done":x.state==="skip"?" skip":"";
     const buttons=`<div class="btnrow">
-      <a class="btn primary" href="${navURL(s.p)}" target="_blank" rel="noopener">${ICON_NAV} Directions</a>
-      <a class="btn" href="${placeURL(s.p)}" target="_blank" rel="noopener">${ICON_PIN} Map</a>
-      ${s.louvre?`<button class="btn gold" data-goto="louvre">🏛 Louvre guide</button>`:""}
+      <a class="btn primary" href="${navURL(s.p)}" target="_blank" rel="noopener">${ICON_NAV} ${t("directions")}</a>
+      <a class="btn" href="${placeURL(s.p)}" target="_blank" rel="noopener">${ICON_PIN} ${t("map")}</a>
+      ${s.louvre?`<button class="btn gold" data-goto="louvre">${t("louvreGuide")}</button>`:""}
     </div>`;
     return `<li class="stop ${s.k}${cls}${i===nextJ?" now":""}" data-id="${id}"><div class="dot">${label}</div>${cardInner(s,id,false,buttons,timeHead(key,i,s,x))}</li>`;
   }).join("");
@@ -606,25 +665,25 @@ function renderTimeline(key){
   if(!any && !live){ bn.innerHTML=""; return; }
   const last=T[T.length-1], warns=T.map((x,j)=>x.warn?`<li>${D.stops[j].h}: ${x.warn}</li>`:"").join("");
   let msg;
-  if(nextJ<0) msg=`🎉 All done for today. Bravo!`;
+  if(nextJ<0) msg=t("allDone");
   else{
     const d=Math.round(T[nextJ].start-T[nextJ].plan), nx=D.stops[nextJ];
-    const status = d>=10?`⏱️ Running about <b>${d} min</b> behind plan`: d<=-10?`🚀 <b>${-d} min</b> ahead of plan`:`✅ Roughly on schedule`;
-    msg=`${status}<br>Next: <b>${nx.h}</b> at ~${fmt(T[nextJ].start)} · Last stop ~${fmt(last.start)}${d>=20?`<br><small>Tip: tap ⏭ Skip on a stop to catch up. Later times update automatically.</small>`:""}`;
+    const status = d>=10?t("behind",{d:d}): d<=-10?t("ahead",{d:-d}):t("onTime");
+    msg=`${status}<br>${t("next")}: <b>${nx.h}</b> ~${fmt(T[nextJ].start)} · ${t("lastStop")} ~${fmt(last.start)}${d>=20?`<br><small>${t("tipSkip")}</small>`:""}`;
   }
-  bn.innerHTML=`<div class="bn ${warns?"bad":""}">${msg}${warns?`<ul>${warns}</ul>`:""}<div style="text-align:right"><button class="reset" data-reset="${key}">Reset timings</button></div></div>`;
+  bn.innerHTML=`<div class="bn ${warns?"bad":""}">${msg}${warns?`<ul>${warns}</ul>`:""}<div style="text-align:right"><button class="reset" data-reset="${key}">${t("resetT")}</button></div></div>`;
 }
 
 function setT(k,v){ store(k, v===null?"":String(v)); }
 function askTime(label,cur){
-  let v; try{ v=prompt(label+" (HH:MM). Leave empty to undo.", fmt(cur)); }catch(e){ return undefined; }
+  let v; try{ v=prompt(label+" "+t("askHint"), fmt(cur)); }catch(e){ return undefined; }
   if(v===null) return undefined; v=v.trim(); if(v==="") return null;
   const m=v.match(/^(\d{1,2})[:.h]?(\d{2})$/); if(!m) return undefined; return Number(m[1])*60+Number(m[2]);
 }
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]"), r=e.target.closest("[data-reset]");
   if(r){ const key=r.dataset.reset;
-    if(!r.dataset.sure){ r.dataset.sure=1; r.textContent="Tap again to clear all arrived/done times"; return; }
+    if(!r.dataset.sure){ r.dataset.sure=1; r.textContent=t("resetTSure"); return; }
     DAYS[key].stops.forEach((s,j)=>{const id=key+"-"+j; setT("arr-"+id,null); setT("done-t-"+id,null); store("skip-"+id,"0");});
     renderTimeline(key); return; }
   if(!b) return;
@@ -632,8 +691,8 @@ document.addEventListener("click",e=>{
   if(act==="arr") setT("arr-"+id, now);
   else if(act==="done"){ setT("done-t-"+id, now); if(STK[id] && store("stk-"+id)!=="1") setTimeout(()=>openMission(id),250); }
   else if(act==="skip") store("skip-"+id, store("skip-"+id)==="1"?"0":"1");
-  else if(act==="edit-arr"){ const v=askTime("Arrived at", tget("arr-"+id)); if(v!==undefined) setT("arr-"+id,v); }
-  else if(act==="edit-done"){ const v=askTime("Done at", tget("done-t-"+id)); if(v!==undefined) setT("done-t-"+id,v); }
+  else if(act==="edit-arr"){ const v=askTime(t("askArr"), tget("arr-"+id)); if(v!==undefined) setT("arr-"+id,v); }
+  else if(act==="edit-done"){ const v=askTime(t("askDone"), tget("done-t-"+id)); if(v!==undefined) setT("done-t-"+id,v); }
   renderTimeline(key);
 });
 setInterval(()=>{ ["thu","fri"].forEach(k=>{ if(todayStr()===DAYDATE[k]) renderTimeline(k); }); },60000);
@@ -645,19 +704,20 @@ function renderLouvre(){
     const label = s.k==="home"?"⌂":i;
     return `<li class="stop ${s.k}${done?" done":""}" data-id="${id}" data-t="${s.t}"><div class="dot">${label}</div>${cardInner(s,id,done)}</li>`;
   }).join("");
-  el.innerHTML=`<div class="summary"><h2>Louvre · a 2½-hour family route</h2>
-    <p>This is one loop with no backtracking: start underground in the medieval castle, come up through Egypt and Greece, cross into Denon for the Victory, Mona Lisa and Napoleon, and finish near Café Marly. Have a snack break whenever the kids need it, and drop anything marked "Optional".</p>
-    <div class="chips"><span class="chip">10:00 → ~12:20</span><span class="chip">Levels −1, 0, 1 only</span><span class="chip">Stroller OK, lifts</span></div>
+  el.innerHTML=`<div class="summary"><h2>${t("louTitle")}</h2>
+    <p>${t("louIntro")}</p>
+    <div class="chips"><span class="chip">${t("louChip1")}</span><span class="chip">${t("louChip2")}</span><span class="chip">${t("louChip3")}</span></div>
     <div class="floors">
-      <div><b>Sully</b>Castle moat (−1), Sphinx (−1), Egypt (0), Venus (0)</div>
-      <div><b>Denon</b>Winged Victory, Apollo, Mona Lisa, Coronation (1)</div>
-      <div><b>Richelieu</b>Napoleon III apartments (1), Café Marly exit</div>
+      <div><b>Sully</b>${t("louSully")}</div>
+      <div><b>Denon</b>${t("louDenon")}</div>
+      <div><b>Richelieu</b>${t("louRich")}</div>
     </div>
-    <div class="btnrow"><a class="btn" href="https://www.louvre.fr/en/visit/hours-admission">Today's room openings (louvre.fr)</a><button class="btn" data-goto="fri">← Back to Friday</button></div></div>
+    <div class="btnrow"><a class="btn" href="https://www.louvre.fr/en/visit/hours-admission">${t("louLink")}</a><button class="btn" data-goto="fri">${t("backFri")}</button></div></div>
     <ol class="timeline">${items}</ol>`;
   bindChecks(el);
 }
 
+applyLang();
 render("thu"); render("fri"); renderLouvre();
 const MAPS={};
 const PINCOL={sight:"#1f3a5f",food:"#c8423b",play:"#2f7d5b",home:"#b98b2e"};
@@ -684,7 +744,7 @@ function initMap(key){
     if(seen.has(s.p)){ seen.get(s.p).push(lbl+" · "+s.h); return; }
     const list=[lbl+" · "+s.h]; seen.set(s.p,list);
     const icon=L.divIcon({className:"",html:`<div class="pin" style="background:${PINCOL[s.k]}"><span>${lbl}</span></div>`,iconSize:[30,30],iconAnchor:[15,30],popupAnchor:[0,-28]});
-    L.marker([s.p.lat,s.p.lon],{icon}).addTo(m).bindPopup(()=>`<b>${list.join("<br>")}</b><a class="pop-btn" href="${navURL(s.p)}" target="_blank" rel="noopener">Directions</a><a class="pop-btn" style="background:#fff;color:#1f3a5f!important;border:1px solid #1f3a5f" href="${placeURL(s.p)}" target="_blank" rel="noopener">Map</a>`);
+    L.marker([s.p.lat,s.p.lon],{icon}).addTo(m).bindPopup(()=>`<b>${list.join("<br>")}</b><a class="pop-btn" href="${navURL(s.p)}" target="_blank" rel="noopener">${t("directions")}</a><a class="pop-btn" style="background:#fff;color:#1f3a5f!important;border:1px solid #1f3a5f" href="${placeURL(s.p)}" target="_blank" rel="noopener">${t("map")}</a>`);
     pts.push([s.p.lat,s.p.lon]);
   });
   L.polyline(pts,{color:"#1d2433",weight:2,opacity:.5,dashArray:"5 6"}).addTo(m);
@@ -696,12 +756,12 @@ function initMap(key){
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-locate]"); if(!b) return;
   const m=MAPS[b.dataset.locate]; if(!m||!navigator.geolocation) return;
-  b.textContent="Locating…";
+  b.textContent=t("locating");
   navigator.geolocation.getCurrentPosition(pos=>{
     const ll=[pos.coords.latitude,pos.coords.longitude];
     if(m._me) m._me.setLatLng(ll); else m._me=L.marker(ll,{icon:L.divIcon({className:"",html:'<div class="me"></div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(m);
-    m.setView(ll,15); b.textContent="◎ Where am I?";
-  },()=>{b.textContent="Location blocked";},{enableHighAccuracy:true,timeout:10000});
+    m.setView(ll,15); b.textContent=t("whereAmI");
+  },()=>{b.textContent=t("locBlocked");},{enableHighAccuracy:true,timeout:10000});
 });
 
 
