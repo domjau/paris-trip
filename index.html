@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paris with the kids — Thu 12 & Fri 13 Nov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1d2433; --muted:#5f6779; --paper:#fbf8f2; --card:#ffffff;
+  --navy:#1f3a5f; --red:#c8423b; --gold:#b98b2e; --line:#e7e0d3; --soft:#f2ece1;
+  --play:#2f7d5b; --food:#c8423b; --sight:#1f3a5f; --move:#8a8f9c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif}
+a{color:var(--navy)}
+header{padding:22px 18px 10px;max-width:760px;margin:0 auto}
+h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:28px;line-height:1.15;margin:0 0 6px}
+h1 span{color:var(--red)}
+.sub{color:var(--muted);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 60px}
+.tabs{position:sticky;top:0;z-index:5;background:var(--paper);display:flex;gap:6px;padding:10px 12px;max-width:760px;margin:0 auto;border-bottom:1px solid var(--line)}
+.tab{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;font:600 13.5px Inter;color:var(--ink);cursor:pointer;min-width:0}
+.tab small{display:block;font-weight:400;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab[aria-selected=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.tab[aria-selected=true] small{color:#d6deea}
+.day{display:none}.day.on{display:block}
+.summary{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:16px 0}
+.summary h2{font-family:Fraunces,serif;font-size:21px;margin:0 0 4px}
+.summary p{margin:4px 0;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--soft);border-radius:999px;padding:3px 10px;font-size:12.5px}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font:600 13.5px Inter;border-radius:10px;padding:8px 12px;border:1px solid var(--navy);color:var(--navy);background:#fff;cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn svg{width:16px;height:16px}
+.map{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px;margin:0 0 16px}
+.map svg{width:100%;height:auto;display:block}
+.map .cap{font-size:12px;color:var(--muted);padding:2px 6px 4px}
+.timeline{position:relative;margin:0;padding:0;list-style:none}
+.timeline:before{content:"";position:absolute;left:21px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.stop{position:relative;padding-left:52px;margin-bottom:14px}
+.dot{position:absolute;left:8px;top:14px;width:28px;height:28px;border-radius:50%;color:#fff;font:700 13px Inter;display:flex;align-items:center;justify-content:center;border:3px solid var(--paper)}
+.sight .dot{background:var(--sight)} .food .dot{background:var(--food)} .play .dot{background:var(--play)} .move .dot{background:var(--move)} .home .dot{background:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.move .card{background:transparent;border-style:dashed}
+.time{font:600 12.5px Inter;color:var(--red);letter-spacing:.02em}
+.where{font:500 12px Inter;color:var(--muted)}
+.card h3{margin:2px 0 4px;font-size:16.5px}
+.card p{margin:6px 0;color:#384052}
+.tip{font-size:13.5px;background:var(--soft);border-radius:10px;padding:7px 10px;margin-top:8px}
+.kids{font-size:13.5px;background:#e9f3ee;border-radius:10px;padding:7px 10px;margin-top:8px}
+details.story{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+details.story summary{cursor:pointer;font:600 13.5px Inter;color:var(--gold);list-style:none}
+details.story summary::-webkit-details-marker{display:none}
+details.story summary:before{content:"▸ ";}
+details.story[open] summary:before{content:"▾ ";}
+details.story p{font-size:14px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:6px;padding:1px 7px;margin-right:4px;vertical-align:1px}
+.tag.book{background:#fde7e4;color:#9b2c25}.tag.free{background:#e3f2ea;color:#22603f}.tag.kid{background:#e6edf7;color:#1f3a5f}.tag.nap{background:#f4ead2;color:#7a5a17}.tag.opt{background:#eee;color:#555}
+.done-toggle{float:right;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer}
+.stop.done .card{opacity:.5}
+.now .card{outline:2px solid var(--gold)}
+section.info{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:16px 0}
+section.info h2{font-family:Fraunces,serif;font-size:20px;margin:0 0 6px}
+section.info ul{margin:6px 0;padding-left:18px}
+section.info li{margin:5px 0}
+.floors{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;font-size:12.5px}
+.floors div{background:var(--soft);border-radius:10px;padding:8px}
+.floors b{display:block;color:var(--navy)}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Paris <span>en famille</span></h1>
+  <p class="sub">Thursday 12 &amp; Friday 13 November 2026 · from our place in the 12e · Metro, bus &amp; on foot</p>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" data-day="thu" aria-selected="true">Thursday<small>Notre-Dame · Eiffel</small></button>
+  <button class="tab" role="tab" data-day="fri" aria-selected="false">Friday<small>Louvre · Père Lachaise</small></button>
+  <button class="tab" role="tab" data-day="louvre" aria-selected="false">Louvre<small>Route inside</small></button>
+  <button class="tab" role="tab" data-day="info" aria-selected="false">Practical<small>Tickets · tips</small></button>
+</nav>
+
+<main class="wrap">
+  <div class="day on" id="day-thu"></div>
+  <div class="day" id="day-fri"></div>
+  <div class="day" id="day-louvre"></div>
+  <div class="day" id="day-info">
+    <section class="info">
+      <h2>Weather</h2>
+      <p>Dry both days, but cold: Thursday about 2 → 10 °C, and Friday starts below freezing (−1 °C) and reaches about 10 °C. Bring hats, gloves and a stroller rain/wind cover. It gets dark about 17:15.</p>
+    </section>
+    <section class="info">
+      <h2>Getting around</h2>
+      <ul>
+        <li><b>Your stations:</b> Picpus and Bel-Air (line 6) are a few minutes' walk away; Nation (lines 1, 2, 6, 9, RER A) is a bit further and has a direct line 1 to the Louvre.</li>
+        <li><b>Line 6 is the fun one:</b> it runs straight from your area to the Eiffel Tower (Bir-Hakeim/Trocadéro), partly above ground, and crosses the Seine right next to the tower.</li>
+        <li><b>Stroller:</b> most Metro stations have stairs and no lifts. Buses are step-free, so with a sleeping toddler pick the bus option in Google Maps.</li>
+        <li><b>Tickets:</b> children under 4 ride free; your 4½-year-old needs a reduced (child) fare. Buy tickets in the official Île-de-France Mobilités / Bonjour RATP app or at station machines.</li>
+        <li><b>Status:</b> as of 10 Nov no strike was announced for these days. Line 7bis is closed all week, but you don't need it. Check the Bonjour RATP app each morning.</li>
+      </ul>
+    </section>
+    <section class="info">
+      <h2>Book ahead</h2>
+      <ul>
+        <li><b>Notre-Dame</b>: free, timed slot on <a href="https://www.notredamedeparis.fr/en/">notredamedeparis.fr</a> (opens 2–3 days before). Walk-ins are usually fine in November.</li>
+        <li><b>Le Procope</b> (Thu lunch), <b>Le Picotin</b> (Thu dinner), <b>Café Marly</b> (Fri lunch), <b>Le Square Trousseau</b> (Fri dinner): tap "Map" for each place's phone and booking link. Ask for a high chair and room for a stroller.</li>
+        <li><b>Seine cruise</b>: <a href="https://www.bateauxparisiens.com/">Bateaux Parisiens</a> 1-hour sightseeing cruise. Departure times change by season, so check Thursday's times and aim for about 16:30–17:00.</li>
+      </ul>
+    </section>
+    <section class="info">
+      <h2>Eiffel Tower photo spots</h2>
+      <ul>
+        <li><b>Trocadéro terrace</b>: the classic full-tower shot. Go to the left or right edge of the terrace for fewer people in the frame.</li>
+        <li><b>Pont de Bir-Hakeim</b>: the tower framed by iron arches, with the line 6 train passing overhead.</li>
+        <li><b>From the boat</b>: the cruise ends below the tower around dusk, when the golden lights come on. The tower sparkles for 5 minutes on the hour after dark, so the first sparkle should be at 18:00.</li>
+      </ul>
+    </section>
+    <section class="info">
+      <h2>A story thread for the kids</h2>
+      <p>Napoleon ties the two days together. Thursday: he crowned himself emperor in <b>Notre-Dame</b> and left his hat at <b>Le Procope</b>. Friday: you'll see the giant painting of that coronation at the <b>Louvre</b>, walk where his palace stood in the <b>Tuileries</b> (the Mona Lisa hung in his bedroom), and visit his generals' graves at <b>Père Lachaise</b>, the cemetery he opened. Tell the 4½-year-old to look out for "the little emperor with the big hat".</p>
+    </section>
+  </div>
+</main>
+<footer>Times are a guide. Directions open Google Maps from wherever you are. Ticks are saved on this device only.</footer>
+
+<script>
+const HOME = {name:"Home", q:"Picpus metro station, Paris", lat:48.8451, lon:2.4013};
+const P = {
+  nd:{q:"Cathédrale Notre-Dame de Paris", lat:48.8530, lon:2.3499},
+  isl:{q:"Berthillon, 29-31 Rue Saint-Louis en l'Île, 75004 Paris", lat:48.8516, lon:2.3567},
+  procope:{q:"Le Procope, 13 Rue de l'Ancienne Comédie, 75006 Paris", lat:48.8530, lon:2.3389},
+  lux:{q:"Aire de jeux Jardin du Luxembourg, 75006 Paris", lat:48.8452, lon:2.3340},
+  troc:{q:"Parvis des Droits de l'Homme, Trocadéro, 75016 Paris", lat:48.8620, lon:2.2877},
+  bateaux:{q:"Bateaux Parisiens, Port de la Bourdonnais, 75007 Paris", lat:48.8597, lon:2.2932},
+  bir:{q:"Bir-Hakeim metro station, Paris", lat:48.8539, lon:2.2894},
+  picotin:{q:"Le Picotin, 35 Rue Sibuet, 75012 Paris", lat:48.8452, lon:2.3986},
+  louvre:{q:"Pyramide du Louvre, Paris", lat:48.8606, lon:2.3376},
+  marly:{q:"Café Marly, 93 Rue de Rivoli, 75001 Paris", lat:48.8618, lon:2.3352},
+  tuil:{q:"Aire de jeux Jardin des Tuileries, Paris", lat:48.8641, lon:2.3289},
+  conc:{q:"Place de la Concorde, Paris", lat:48.8656, lon:2.3212},
+  pl:{q:"Cimetière du Père-Lachaise, Boulevard de Ménilmontant, 75020 Paris", lat:48.8600, lon:2.3892},
+  trous:{q:"Le Square Trousseau, 1 Rue Antoine Vollon, 75012 Paris", lat:48.8505, lon:2.3768},
+};
+
+const DAYS = {
+ thu:{
+  title:"Thursday · The classic sights",
+  blurb:"Île de la Cité in the morning, lunch on the Left Bank, a playground and nap in the Luxembourg Gardens, then the Eiffel Tower and a Seine cruise at sunset.",
+  chips:["≈ 9:30 → 19:00","Dry, 2–10 °C","Lunch: Le Procope","Dinner: Le Picotin"],
+  stops:[
+   {t:"09:30",k:"home",p:HOME,h:"Leave home",d:"Head to Notre-Dame: about 30–35 min by Metro (line 1 from Nation to Hôtel de Ville) or a step-free bus. Tap Directions and pick whichever suits the stroller."},
+   {t:"10:10",k:"sight",p:P.nd,h:"Notre-Dame de Paris",tags:["free","book"],
+    d:"Paris's great Gothic cathedral, begun in 1163 and newly restored after the 2019 fire. The inside is brighter than it has been in centuries: cream-coloured stone, gleaming gold, and three huge rose windows of 13th-century glass. Plan on about 45 minutes. Walk the full loop round the choir, then go out and round the back to see the flying buttresses (the stone 'arms' holding the walls up) and the rebuilt spire.",
+    kids:"In the square in front, find the bronze star in the ground called <b>Point Zéro</b>. All road distances in France are measured from it, and legend says anyone who stands on it will come back to Paris. Outside, count the gargoyles and chimeras (stone monsters) along the roofline.",
+    tip:"Bags over 40×30×20 cm aren't allowed, so bring a small bag. A free timed slot is optional in November but saves queuing.",
+    story:`<p><b>Napoleon crowns himself (2 December 1804).</b> Napoleon brought Pope Pius VII from Rome for the coronation, and then, at the key moment, took the crown and put it on his own head before crowning Joséphine. After the Revolution the cathedral was in such a bad state (it had been turned into a "Temple of Reason" and used as a store) that the damaged walls were hidden behind drapes for the ceremony. You'll see David's giant painting of this scene at the Louvre on Friday.</p>
+    <p><b>Saved by a novel.</b> By the 1830s the building was close to ruin. Victor Hugo's <i>The Hunchback of Notre-Dame</i> (1831) made Parisians fall back in love with it, and the architect Viollet-le-Duc then restored it, adding the spire and many of the monsters on the roof.</p>
+    <p><b>Liberation night (24 August 1944).</b> When the first Free French tanks reached the Hôtel de Ville, the cathedral's great bell Emmanuel rang out for the first time in four years of occupation. The bells of other churches joined in, and all of Paris knew the city was being freed. Two days later General de Gaulle came for a thanksgiving service, and shots were fired inside the cathedral, but he kept walking down the aisle.</p>`},
+   {t:"11:10",k:"sight",p:P.isl,h:"Île Saint-Louis & the quays",tags:["kid"],
+    d:"Cross the little Pont Saint-Louis behind Notre-Dame onto the city's quietest island. It's a single 17th-century neighbourhood of honey-coloured townhouses, cobbled side streets and small shops. Stroll the Rue Saint-Louis-en-l'Île and get a <b>Berthillon</b> ice cream (Paris's most famous, made here since 1954) or a hot chocolate. Then walk out onto <b>Pont de la Tournelle</b> for the best photo of Notre-Dame from behind.",
+    kids:"On Pont de la Tournelle a tall statue of <b>Sainte Geneviève</b>, the patron saint of Paris, faces the city. The story goes that she saved Paris from Attila the Hun by getting everyone to pray instead of running away.",
+    tip:"Flat and quiet, so this works well if the 4½-year-old wants to walk.",
+    story:`<p>Until the 1600s this was two swampy islets used for grazing cows and fighting duels. In 1614 developers joined them together, built quays and bridges, and laid out a planned luxury district, one of the first in Europe. It has barely changed since, which is why it feels like a village.</p>`},
+   {t:"12:15",k:"food",p:P.procope,h:"Lunch · Le Procope",tags:["book"],
+    d:"Paris's oldest café-restaurant, opened in 1686 in Saint-Germain, about 20 min on foot along the Seine. Inside it's like a museum: red walls, chandeliers, and portraits of the famous people who ate here. It's a proper brasserie serving classic French dishes, open all day. It feels special but is relaxed about families.",
+    kids:"Near the entrance, look for <b>Napoleon's hat</b> in a glass case (story below).",
+    tip:"Book for 12:15 and ask for a high chair. Order a classic like coq au vin or a roast chicken to share with the kids.",
+    story:`<p>Procope was opened by a Sicilian, Francesco Procopio, and helped make coffee fashionable in Paris. In the 1700s it was the meeting place of the Enlightenment: Voltaire, Diderot and Benjamin Franklin all came here, and during the Revolution so did Danton, Marat and Robespierre.</p>
+    <p><b>The hat.</b> As a young, penniless artillery officer, Napoleon Bonaparte is said to have run up a bill he couldn't pay, so he left his bicorne hat as security. The restaurant still displays a hat said to be his.</p>`},
+   {t:"13:45",k:"play",p:P.lux,h:"Jardin du Luxembourg · nap stroll + playground",tags:["kid","nap"],
+    d:"An 8-minute walk. This is Paris's favourite garden: an Italian-style palace, a big octagonal pond, avenues of chestnut trees and about a hundred statues. Do a slow loop past the palace and pond so the little one can nap in the stroller. Then go to the playground in the southwest corner (small fee, about €3 per child aged 3+, €1 per adult), one of the best in Paris, with a separate fenced area for toddlers.",
+    kids:"Look for the small <b>Statue of Liberty</b> in the west part of the garden. It's a copy by the same sculptor as the one in New York.",
+    tip:"The garden closes at about 17:00 in November, which is plenty of time.",
+    story:`<p><b>A homesick queen.</b> Marie de Médicis, widow of Henri IV, built the palace from 1612 to remind her of the Pitti Palace in her home city of Florence.</p>
+    <p><b>Revolution and Napoleon.</b> During the Terror the palace was a prison. The painter Jacques-Louis David was held here and sketched the garden from his window (he later painted Napoleon's coronation). In 1799 Napoleon made the palace the home of the Senate, which still meets here.</p>
+    <p><b>World War II.</b> During the occupation the palace was the headquarters of the German air force (Luftwaffe) for Western Europe, and the Germans dug bunkers beneath it. On 25 August 1944 it was one of the last German strongholds in Paris and was retaken after fierce fighting by the Resistance and Leclerc's division.</p>`},
+   {t:"15:15",k:"move",p:P.troc,h:"Travel to Trocadéro (≈30 min)",d:"By RER or Metro, or a bus if the toddler is still asleep. Google Maps will pick the fastest route."},
+   {t:"15:50",k:"sight",p:P.troc,h:"Eiffel Tower photo · Trocadéro",tags:["free"],
+    d:"The classic full-tower view: from the terrace between the two curved wings of the Palais de Chaillot, the gardens and fountains drop down to the Seine with the tower right across the river. Late-afternoon light is good. Take the photo, then walk down through the gardens and across Pont d'Iéna to the foot of the tower (about 10 min).",
+    kids:"Stand under the tower and look straight up through the middle. It's 330 m tall and made of 18,000 iron pieces held together by 2.5 million rivets.",
+    tip:"For a second shot, Pont de Bir-Hakeim is 10 min upriver, with the tower framed by iron arches.",
+    story:`<p><b>Hitler's photo (23 June 1940).</b> A week after German troops entered Paris, Hitler made his only visit to the city, a three-hour tour at dawn. The most famous photo of it was taken right here on this terrace, with the tower behind him. Legend says the French had sabotaged the tower's lifts so he would have to climb, and he never went up, giving rise to the saying that Hitler conquered France but not the Eiffel Tower.</p>
+    <p><b>Human rights.</b> In 1948 the United Nations adopted the Universal Declaration of Human Rights in this palace, which is why the terrace is called the Parvis des Droits de l'Homme ("Square of Human Rights").</p>
+    <p><b>The tower that wasn't meant to stay.</b> It was built for the 1889 World's Fair, marking 100 years since the Revolution, with a permit for just 20 years. Many artists called it an eyesore. Radio saved it: in World War I its giant antenna intercepted German military messages, including some that helped unmask the spy Mata Hari.</p>`},
+   {t:"16:30",k:"sight",p:P.bateaux,h:"Seine cruise · Bateaux Parisiens",tags:["book","kid"],
+    d:"A 1-hour glass-covered boat trip past almost every landmark: the Grand Palais, the golden statues of Pont Alexandre III, the Louvre, the Musée d'Orsay (a former railway station), Notre-Dame and the islands, then back to the tower. The kids sit down, it's warm, and there are toilets on board. Take the departure nearest 16:30–17:00 so you sail into sunset (about 17:10).",
+    kids:"At <b>Pont de l'Alma</b>, look for the stone soldier (the Zouave) on the bridge pillar. Parisians judge floods by how high the water comes up on him: in the great flood of 1910 it reached his chin.",
+    tip:"If you return around 18:00, stay by the tower: the first sparkle (5 min on the hour) should be at 18:00.",
+    story:`<p><b>Pont Neuf</b> means "New Bridge", but it's the oldest bridge in Paris (finished in 1607). <b>Pont Alexandre III</b> was a gift of friendship from Russia's tsar for the 1900 World's Fair. The <b>Musée d'Orsay</b> was a railway station; in 1945 returning prisoners of war and concentration-camp survivors were received there.</p>`},
+   {t:"18:10",k:"move",p:P.bir,h:"Home on line 6 (≈35 min)",d:"From Bir-Hakeim, line 6 runs straight to Picpus or Bel-Air with no changes. Sit on the right-hand side heading east for views of the tower as the train crosses the Seine.",
+    story:`<p><b>Why "Bir-Hakeim"?</b> The bridge and station are named after a 1942 battle in the Libyan desert, where about 3,700 Free French soldiers held off Rommel's much larger army for 16 days. It was a big boost for de Gaulle's Free France.</p>
+    <p>Near the station a memorial marks the <b>Vel d'Hiv</b>, a cycling stadium where, in July 1942, French police held more than 13,000 Jews, including thousands of children, before they were deported.</p>`},
+   {t:"19:30",k:"food",p:P.picotin,h:"Dinner · Le Picotin (near home)",tags:["book"],
+    d:"A cosy, rustic French bistro on Rue Sibuet, a few minutes from your door. Everything is fresh and home-cooked, and it's popular with local families. Thursday dinner seems to start at 19:30, so book.",
+    tip:"If the kids are fading, ask whether you can take dishes home, or save Le Picotin for Friday.",
+    story:`<p><b>Your own neighbourhood's history.</b> Place de la Nation was once called the "Place du Trône", after the throne set up there in 1660 when Louis XIV and his new queen entered Paris. In summer 1794, at the height of the Terror, the guillotine stood there, and more than 1,300 people were executed in six weeks. Their bodies were buried in pits in a convent garden on Rue de Picpus, now the small private <b>Picpus Cemetery</b>, a few minutes' walk from your flat.</p>
+    <p>The Marquis de <b>Lafayette</b>, hero of the American Revolution, chose to be buried there next to his wife, under soil brought from Bunker Hill. An American flag flies over his grave and kept flying throughout the German occupation. On 4 July 1917 an American officer stood at the grave and declared, "Lafayette, we are here!" The cemetery opens only for a couple of hours on some winter afternoons, so check before you go.</p>`}
+  ]},
+ fri:{
+  title:"Friday · Louvre, gardens & Père Lachaise",
+  blurb:"Your 10:00 Louvre slot, lunch overlooking the Pyramid, the Tuileries playground and a nap stroll to Concorde, then the atmospheric Père Lachaise cemetery, which is close to home.",
+  chips:["≈ 9:15 → 17:45","Cold morning, dry","Lunch: Café Marly","Dinner: Le Square Trousseau"],
+  stops:[
+   {t:"09:15",k:"home",p:HOME,h:"Leave home",d:"Walk or take a bus to Nation, then line 1 straight to Palais Royal–Musée du Louvre (about 20 min, no changes). Allow time for the security queue before 10:00."},
+   {t:"10:00",k:"sight",p:P.louvre,h:"Louvre",tags:["book","kid"],louvre:true,
+    d:"A castle, then a royal palace, then the world's largest art museum. With small kids, follow the route in the <b>Louvre tab</b>: a real medieval castle, a giant sphinx and a walk-in tomb, the Venus de Milo, the Winged Victory, the Mona Lisa, and Napoleon's coronation. About 2–2½ hours.",
+    tip:"Strollers are allowed and lifts link the floors. On Fridays the second floor (level 2) opens only at 10:30, but this route doesn't use it.",
+    story:`<p>King Philippe Auguste built the Louvre around 1190 as a fortress to guard Paris while he was away on crusade. It became a royal palace, and after Louis XIV moved the court to Versailles it filled with artists. The Revolution opened it as a public museum in 1793. Napoleon renamed it the "Musée Napoléon" and filled it with art taken from the countries he conquered; much of it was returned after his defeat in 1815.</p>`},
+   {t:"12:30",k:"food",p:P.marly,h:"Lunch · Café Marly",tags:["book"],
+    d:"An elegant classic French restaurant under the arcades of the Louvre's Richelieu wing, with tables looking straight onto I. M. Pei's glass Pyramid. The rooms are velvet and gilt, with windows onto the sculpture courts. It's pricey, but it's the nice-meal-with-a-view moment of the trip.",
+    kids:"Count the glass panes on the Pyramid. A popular myth says there are 666; there are actually 673.",
+    tip:"Café Marly is outside the museum's security, so finish your visit first. If you'd rather stay inside, Café Mollien (Denon wing) is the sit-down option.",
+    story:`<p>Until 1989 the wing above you housed France's Ministry of Finance. President Mitterrand moved the ministry out so the museum could expand, and the Pyramid opened the same year. Many Parisians hated it at first.</p>`},
+   {t:"14:00",k:"play",p:P.tuil,h:"Tuileries · playground & carousel",tags:["kid","free","nap"],
+    d:"The royal garden stretching from the Louvre to Place de la Concorde, laid out in 1564 and redesigned in 1664 by Le Nôtre, the gardener of Versailles. The playground and carousel are on the north side, by the Rue de Rivoli. Afterwards, walk slowly down the central path past the statues to the big round pond so the toddler can nap.",
+    kids:"At the Louvre end, look at the pink-marble <b>Arc du Carrousel</b>. Napoleon built it for his victories and put four bronze horses taken from St Mark's in Venice on top. After his defeat Venice took them back, and the ones you see now are replacements.",
+    tip:"Kiosks along the path sell hot chocolate and crêpes.",
+    story:`<p><b>The missing palace.</b> The open space between the two wings of the Louvre was once closed off by the <b>Tuileries Palace</b>. Louis XVI lived there after being brought from Versailles, until a crowd stormed it in 1792. Napoleon then made it his main home, and he hung the <b>Mona Lisa in his bedroom</b>. In 1871 the Paris Commune burned the palace down, and the ruins were cleared away in the 1880s.</p>
+    <p><b>World War II spy story.</b> In the small Jeu de Paume museum at the Concorde end of the garden, the Nazis sorted thousands of artworks stolen from Jewish families before shipping them to Germany. A quiet curator, <b>Rose Valland</b>, secretly wrote down where every piece was sent. After the war her notes helped recover tens of thousands of works (her story inspired the film <i>The Monuments Men</i>).</p>`},
+   {t:"14:50",k:"sight",p:P.conc,h:"Place de la Concorde",tags:["free"],
+    d:"Paris's grandest square, with the obelisk, two fountains of bronze sea creatures, and views straight up the Champs-Élysées to the Arc de Triomphe and across the Seine to the Eiffel Tower. A quick main-sights bonus on the way.",
+    kids:"The <b>obelisk</b> is about 3,300 years old: older than the Louvre, Notre-Dame or anything else in Paris. It came from a temple in Luxor, Egypt, and the pictures carved on it are hieroglyphs. The gold tip was added in 1998.",
+    story:`<p>Originally named after Louis XV, the square became the "Place de la Révolution", and the guillotine stood here: Louis XVI was executed on 21 January 1793, and Marie Antoinette that October. Afterwards it was renamed "Concorde" (harmony) as a fresh start. Egypt gave the obelisk to France, and it arrived in 1836 after a two-year journey.</p>
+    <p>During the occupation, German troops paraded down the Champs-Élysées every day, and the grand buildings on the north side served as German headquarters. On 25 August 1944 Leclerc's tanks fought German forces around this square during the liberation.</p>`},
+   {t:"15:10",k:"move",p:P.pl,h:"Travel to Père Lachaise (≈35 min)",d:"Bus 69 runs from the Rue de Rivoli to the 'Roquette–Père-Lachaise' stop by the main gate: no stairs and good views. Or take Metro line 1 and change to line 2 at Nation."},
+   {t:"15:45",k:"sight",p:P.pl,h:"Père Lachaise cemetery",tags:["free"],
+    d:"The world's most visited cemetery: a hilly, leafy 'city of the dead' with cobbled lanes, moss-covered chapels and about 70,000 tombs, especially beautiful in autumn. Pick up a free map at the entrance and choose a few graves. Near the main gate are <b>Chopin</b> (division 11) and <b>Jim Morrison</b> (6); further up are <b>Oscar Wilde</b> (89, behind glass because of all the lipstick kisses) and <b>Édith Piaf</b> (97).",
+    kids:"Make it a treasure hunt: find a tomb shaped like a little house, an angel, an owl, or one of the cemetery's cats.",
+    tip:"It closes at 17:30 in winter and dusk comes at about 17:10, so start back by 17:00. The paths are cobbled and sloping, which is bumpy for the stroller.",
+    story:`<p><b>Napoleon's cemetery.</b> It opened in 1804, the year of the coronation, as part of Napoleon's reforms moving burials out of the crowded city. At first nobody wanted to be buried so far out, so in a clever bit of marketing the authorities moved the remains of the playwright Molière, the fable writer La Fontaine and the medieval lovers Héloïse and Abélard here. It worked. Several of Napoleon's marshals now lie here too, including Masséna and Marshal Ney, executed in 1815 for siding with him.</p>
+    <p><b>The Communards' Wall.</b> In the far eastern corner, on 28 May 1871, the last fighters of the Paris Commune were lined up against this wall and shot. It is still a place of pilgrimage.</p>
+    <p><b>World War II.</b> Nearby, a row of powerful memorials remembers the French people deported to Auschwitz, Buchenwald, Ravensbrück and other Nazi camps. Chopin's grave holds his body, but his heart was smuggled home to Warsaw by his sister and rests in a church there.</p>`},
+   {t:"17:15",k:"move",p:HOME,h:"Home (≈20 min)",d:"Line 2 from Père-Lachaise or Philippe Auguste to Nation, then a short walk or one stop on line 6. Rest before dinner."},
+   {t:"19:00",k:"food",p:P.trous,h:"Dinner · Le Square Trousseau",tags:["book","kid"],
+    d:"A belle-époque bistro (zinc bar, mirrors, banquettes) facing a leafy square, 15 min from home. Classic French food and excellent desserts; kids get chalk to draw on the pavement. A lovely last-evening meal.",
+    tip:"Book and ask for an early table. Le Picotin is the closer alternative.",
+    story:`<p>The square was laid out in 1906 on the site of the old Hospice des Enfants-Trouvés, a hospital for abandoned babies. All around is the Faubourg Saint-Antoine, Paris's old furniture-makers' quarter. On 14 July 1789 its workers marched a few hundred metres west and stormed the Bastille, starting the French Revolution.</p>`}
+  ]}
+};
+
+const LOUVRE = [
+ {t:"09:45",k:"home",h:"Arrive & get set",where:"Pyramid entrance → Hall Napoléon (under the Pyramid)",
+  d:"Enter through the glass Pyramid with your timed ticket. Under it is the Hall Napoléon, with toilets, baby-changing, the cloakroom and lifts. Pick up a paper map. Strollers are allowed, and the museum can lend you one. Head for the <b>Sully</b> wing sign.",
+  tip:"Friday note: second-floor (level 2) rooms open only at 10:30. This route stays on levels −1, 0 and 1."},
+ {t:"10:05",k:"sight",h:"1 · The medieval castle",where:"Sully wing · level −1 · 'Medieval Louvre'",
+  d:"Walk through the actual moat of King Philippe Auguste's fortress (around 1190) and touch the 800-year-old walls and the base of the great round keep. This is where the Louvre began.",
+  kids:"Look for the little symbols carved into the stones, including hearts. Each stonemason had his own sign, so he'd get paid for the stones he cut."},
+ {t:"10:20",k:"sight",h:"2 · The Great Sphinx of Tanis",where:"Sully · level −1 · crypt of the Sphinx (room 338)",
+  d:"A pink-granite lion with a pharaoh's head, about 4,500 years old and bigger than a car. It guards the entrance to the Egyptian galleries.",
+  story:`<p><b>Napoleon in Egypt.</b> In 1798 Napoleon invaded Egypt, taking 160 scientists and artists with him. In 1799 his soldiers dug up the <b>Rosetta Stone</b>, carved with the same text in three scripts. The British captured it (it's in London), but a young Frenchman, <b>Champollion</b>, used copies of it to crack hieroglyphs in 1822, and he became the first curator of this very Egyptian collection.</p>`},
+ {t:"10:30",k:"sight",h:"3 · Mummies & a walk-in tomb",where:"Sully · level 0 · Egyptian antiquities",
+  d:"Climb one floor (by stairs or lift) into Ancient Egypt. Walk inside the <b>Mastaba of Akhethetep</b>, a real 4,400-year-old tomb chapel with carved walls. Then see painted coffins, a real human mummy, mummified animals (cats!), and tiny figures of servants made to work for the dead in the afterlife.",
+  kids:"Can you spot animals in the hieroglyphs? Owls, snakes, birds and eyes are letters. Try to find a cat statue."},
+ {t:"10:55",k:"sight",h:"4 · Venus de Milo",where:"Sully · level 0 · Greek antiquities (room 345)",
+  d:"Follow the signs into the Greek galleries. The goddess of love, carved around 150–125 BC, was found by a farmer on the Greek island of Milos in 1820, already missing her arms. A French naval officer spotted her, and she was given to King Louis XVIII.",
+  kids:"Play a guessing game: what was she holding? An apple, a mirror, a shield? Nobody knows for sure."},
+ {t:"11:10",k:"sight",h:"5 · Winged Victory of Samothrace",where:"Denon · top of the great Daru staircase",
+  d:"Head into Denon and look up the grand staircase. Nike, the winged goddess of victory, is about 2,200 years old. She stands on the prow of a stone warship as if she has just landed in a gust of sea wind. This is the most dramatic sight in the museum. There's a lift beside the staircase for the stroller.",
+  story:`<p><b>WWII escape.</b> Before war broke out in 1939, museum director Jacques Jaujard emptied the Louvre. Workers slid the Winged Victory down this staircase on a wooden ramp, and she spent the war hidden in the Château de Valençay in the Loire valley. The Venus de Milo and thousands of other works were hidden in châteaux too.</p>`},
+ {t:"11:20",k:"sight",h:"6 · Galerie d'Apollon (quick peek)",tags:["opt"],where:"Denon · level 1 · room 705 (right next to the Victory)",
+  d:"A gilded hall that Louis XIV decorated around himself as the Sun King, a rehearsal for the Hall of Mirrors at Versailles. It's dazzling even without the jewels.",
+  story:`<p>On 19 October 2025, thieves used a furniture lift to reach a window, broke in and stole crown jewels in a few minutes. The gallery was closed for nine months and reopened on 22 July 2026, deliberately without its jewel cases, as a grand ceremonial hall again.</p>`},
+ {t:"11:30",k:"sight",h:"7 · The Mona Lisa",where:"Denon · level 1 · Salle des États (room 711), via the Grande Galerie",
+  d:"Walk down the first stretch of the Grande Galerie (Italian paintings) to the big room where Leonardo's Mona Lisa hangs behind bulletproof glass. Leonardo brought her to France himself in 1516, when King François I invited him. The line snakes toward her, so with the kids you can watch from the side.",
+  kids:"Tell them beforehand that she's small. Then ask whether her eyes follow you as you walk across the room.",
+  story:`<p><b>Napoleon's bedroom.</b> Napoleon took her from the museum to hang in his bedroom at the Tuileries Palace for a few years.</p>
+  <p><b>The 1911 theft.</b> A handyman, Vincenzo Peruggia, hid in a cupboard overnight and walked out with her under his work smock. She was missing for two years; the poet Apollinaire was arrested and Picasso questioned. Peruggia was finally caught in Florence trying to sell her, and the theft made her the most famous painting in the world.</p>
+  <p><b>WWII.</b> She was evacuated in 1939 in a special padded case and moved between several châteaux in the countryside to keep her away from the Germans and the bombing.</p>`},
+ {t:"11:50",k:"sight",h:"8 · The Coronation of Napoleon",where:"Denon · level 1 · room 702 (just across from the Mona Lisa)",
+  d:"Jacques-Louis David's enormous painting (about 10 × 6 m) of the scene in Notre-Dame you visited yesterday. Napoleon, having already crowned himself, lifts a crown over the kneeling Joséphine while the Pope sits behind. Next door (room 700) are <b>Liberty Leading the People</b> by Delacroix and the giant <b>Raft of the Medusa</b>.",
+  kids:"Find Napoleon, Joséphine, the Pope… and Napoleon's mother, seated in the middle of the balcony. She wasn't actually there because she was angry with him, but Napoleon had David paint her in anyway.",
+  story:`<p>In <i>Liberty Leading the People</i> (about the 1830 revolution), the boy waving two pistols is said to have inspired Gavroche in <i>Les Misérables</i>, the novel Victor Hugo wrote after <i>Notre-Dame</i>.</p>`},
+ {t:"12:10",k:"play",h:"9 · Bonus: Napoleon III's apartments",tags:["opt"],where:"Richelieu · level 1 (room 544) · on the way to Café Marly",
+  d:"If energy remains: red velvet, gold everywhere and giant crystal chandeliers in the state rooms of Napoleon's nephew, Emperor Napoleon III. Kids think it's a real princess palace. Then go back down to the Hall Napoléon and out to <b>Café Marly</b> by the Richelieu passage.",
+  tip:"If the kids are done, skip it. Go straight back to the Pyramid and out to lunch."},
+];
+
+const enc = s => encodeURIComponent(s);
+const navURL = p => `https://www.google.com/maps/dir/?api=1&destination=${enc(p.q)}&travelmode=transit`;
+const placeURL = p => `https://www.google.com/maps/search/?api=1&query=${enc(p.q)}`;
+const dayURL = stops => {
+  const seen=[]; stops.forEach(s=>{ if(!seen.length||seen[seen.length-1]!==s.p) seen.push(s.p)});
+  return "https://www.google.com/maps/dir/"+seen.map(p=>enc(p.q)).join("/");
+};
+const ICON_NAV='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4.5 20.3l.7.7L12 18l6.8 3 .7-.7z"/></svg>';
+const ICON_PIN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+const TAGS={book:"Book ahead",free:"Free",kid:"Kids love it",nap:"Nap time",opt:"Optional"};
+
+function store(k,v){try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){return null}}
+
+function mapSVG(stops){
+  const W=640,H=250, lon0=2.278,lon1=2.408, lat0=48.840,lat1=48.868;
+  const X=l=>((l-lon0)/(lon1-lon0))*W, Y=a=>H-((a-lat0)/(lat1-lat0))*H;
+  const seine=[[2.276,48.848],[2.285,48.8545],[2.293,48.860],[2.302,48.8635],[2.315,48.8645],[2.327,48.8615],[2.338,48.8585],[2.347,48.8555],[2.355,48.8515],[2.363,48.847],[2.372,48.842],[2.380,48.838]];
+  const pts=[]; stops.forEach(s=>{ if(!pts.length||pts[pts.length-1].p!==s.p) pts.push(s)});
+  const path=seine.map((c,i)=>(i?"L":"M")+X(c[0]).toFixed(1)+","+Y(c[1]).toFixed(1)).join(" ");
+  const route=pts.map((s,i)=>(i?"L":"M")+X(s.p.lon).toFixed(1)+","+Y(s.p.lat).toFixed(1)).join(" ");
+  const col={sight:"#1f3a5f",food:"#c8423b",play:"#2f7d5b",move:"#8a8f9c",home:"#b98b2e"};
+  let n=0, dots=""; const labelled=new Set();
+  stops.forEach(s=>{ if(s.k==="move") return; n++; const x=X(s.p.lon),y=Y(s.p.lat);
+    const off = labelled.has(s.p)? 1:0; labelled.add(s.p);
+    dots+=`<a href="${navURL(s.p)}" target="_blank" rel="noopener"><circle cx="${x+off*14}" cy="${y-off*14}" r="10" fill="${col[s.k]}" stroke="#fff" stroke-width="2"/><text x="${x+off*14}" y="${y-off*14+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Inter">${s.k==="home"?"⌂":n}</text></a>`;
+  });
+  return `<svg viewBox="-12 -12 ${W+24} ${H+24}" role="img" aria-label="Schematic map of the day">
+  <rect x="-12" y="-12" width="${W+24}" height="${H+24}" rx="12" fill="#f4efe5"/>
+  <path d="${path}" fill="none" stroke="#a9c6e0" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="${X(2.318)}" y="${Y(48.8668)}" font-size="11" fill="#6b8fb3" font-style="italic" font-family="Inter">la Seine</text>
+  <path d="${route}" fill="none" stroke="#1d2433" stroke-width="1.6" stroke-dasharray="4 4" opacity=".55"/>
+  ${dots}</svg>`;
+}
+
+function cardInner(s, id, done, buttons){
+  const tags=(s.tags||[]).map(t=>`<span class="tag ${t}">${TAGS[t]}</span>`).join("");
+  return `<div class="card">
+    <label class="done-toggle"><input type="checkbox" ${done?"checked":""}> done</label>
+    <div class="time">${s.t}</div>
+    <h3>${s.h}</h3>
+    ${s.where?`<div class="where">📍 ${s.where}</div>`:""}
+    ${tags?`<div>${tags}</div>`:""}
+    <p>${s.d}</p>
+    ${s.kids?`<div class="kids">🧒 ${s.kids}</div>`:""}
+    ${s.tip?`<div class="tip">💡 ${s.tip}</div>`:""}
+    ${s.story?`<details class="story"><summary>History & stories</summary>${s.story}</details>`:""}
+    ${buttons||""}
+  </div>`;
+}
+
+function bindChecks(el){
+  el.querySelectorAll(".stop input").forEach(cb=>cb.addEventListener("change",e=>{
+    const li=e.target.closest(".stop"); li.classList.toggle("done",e.target.checked);
+    store("done-"+li.dataset.id, e.target.checked?"1":"0");
+  }));
+}
+
+function render(key){
+  const D=DAYS[key], el=document.getElementById("day-"+key);
+  let n=0;
+  const items=D.stops.map((s,i)=>{
+    const label = s.k==="move" ? "→" : (s.k==="home"?"⌂":++n);
+    const id=key+"-"+i, done=store("done-"+id)==="1";
+    const buttons=`<div class="btnrow">
+      <a class="btn primary" href="${navURL(s.p)}" target="_blank" rel="noopener">${ICON_NAV} Directions</a>
+      <a class="btn" href="${placeURL(s.p)}" target="_blank" rel="noopener">${ICON_PIN} Map</a>
+      ${s.louvre?`<button class="btn gold" data-goto="louvre">🏛 Louvre guide</button>`:""}
+    </div>`;
+    return `<li class="stop ${s.k}${done?" done":""}" data-id="${id}" data-t="${s.t}"><div class="dot">${label}</div>${cardInner(s,id,done,buttons)}</li>`;
+  }).join("");
+  el.innerHTML=`<div class="summary"><h2>${D.title}</h2><p>${D.blurb}</p>
+    <div class="chips">${D.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} Whole day in Google Maps</a></div></div>
+    <div class="map">${mapSVG(D.stops)}<div class="cap">Schematic, not to scale. Tap a number to navigate there. Tap "History & stories" on any stop.</div></div>
+    <ol class="timeline">${items}</ol>`;
+  bindChecks(el);
+}
+
+function renderLouvre(){
+  const el=document.getElementById("day-louvre");
+  const items=LOUVRE.map((s,i)=>{
+    const id="louvre-"+i, done=store("done-"+id)==="1";
+    const label = s.k==="home"?"⌂":i;
+    return `<li class="stop ${s.k}${done?" done":""}" data-id="${id}" data-t="${s.t}"><div class="dot">${label}</div>${cardInner(s,id,done)}</li>`;
+  }).join("");
+  el.innerHTML=`<div class="summary"><h2>Louvre · a 2½-hour family route</h2>
+    <p>This is one loop with no backtracking: start underground in the medieval castle, come up through Egypt and Greece, cross into Denon for the Victory, Mona Lisa and Napoleon, and finish near Café Marly. Have a snack break whenever the kids need it, and drop anything marked "Optional".</p>
+    <div class="chips"><span class="chip">10:00 → ~12:20</span><span class="chip">Levels −1, 0, 1 only</span><span class="chip">Stroller OK, lifts</span></div>
+    <div class="floors">
+      <div><b>Sully</b>Castle moat (−1), Sphinx (−1), Egypt (0), Venus (0)</div>
+      <div><b>Denon</b>Winged Victory, Apollo, Mona Lisa, Coronation (1)</div>
+      <div><b>Richelieu</b>Napoleon III apartments (1), Café Marly exit</div>
+    </div>
+    <div class="btnrow"><a class="btn" href="https://www.louvre.fr/en/visit/hours-admission">Today's room openings (louvre.fr)</a><button class="btn" data-goto="fri">← Back to Friday</button></div></div>
+    <ol class="timeline">${items}</ol>`;
+  bindChecks(el);
+}
+
+render("thu"); render("fri"); renderLouvre();
+
+function show(key){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", b.dataset.day===key));
+  document.querySelectorAll(".day").forEach(d=>d.classList.toggle("on", d.id==="day-"+key));
+  if(location.hash!=="#"+key) history.replaceState(null,"","#"+key);
+  window.scrollTo({top:0});
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>show(b.dataset.day)));
+document.addEventListener("click",e=>{const g=e.target.closest("[data-goto]"); if(g) show(g.dataset.goto);});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(document.getElementById("day-"+h)) show(h);});
+
+(function(){
+  const h=location.hash.slice(1);
+  const now=new Date(); const ds=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  const key = document.getElementById("day-"+h) ? h : (ds==="2026-11-13" ? "fri" : "thu");
+  show(key);
+  const today = ds==="2026-11-12"?"thu":ds==="2026-11-13"?"fri":null;
+  if(today){
+    const mins=now.getHours()*60+now.getMinutes(); let cur=null;
+    document.querySelectorAll("#day-"+today+" .stop").forEach(li=>{const [a,b]=li.dataset.t.split(":").map(Number); if(a*60+b<=mins) cur=li;});
+    if(cur) cur.classList.add("now");
+  }
+})();
+</script>
+</body>
+</html>
