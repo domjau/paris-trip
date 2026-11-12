@@ -445,15 +445,16 @@ const LOUVRE = [
 ];
 
 
+const OFF=new Set(["thu-7","thu-9"]);
 const STK={
  "thu-1":{e:"⛪",n:"Cathedral",m:"Find the bronze star called <b>Point Zéro</b> on the ground in front of Notre-Dame and stand on it. Then spot a stone monster on the roof! 👹"},
  "thu-2":{e:"🍦",n:"Ice Cream Island",m:"Find the tall statue of <b>Sainte Geneviève</b> on the bridge. Then eat an ice cream (or a hot chocolate)!"},
  "thu-3":{e:"🥞",n:"Crêpe Champion",m:"Watch a crêpe being made on the big round hot plate, then finish your sweet crêpe! Bonus: say « Une crêpe au chocolat, s'il vous plaît ! » 🍫"},
  "thu-4":{e:"🛝",n:"Garden Explorer",m:"Go down the slide! Can you find the <b>tiny Statue of Liberty</b> hiding in the garden?"},
  "thu-6":{e:"🗼",n:"Eiffel Tower",m:"Make an Eiffel Tower with your arms for the photo! 🙆 Look straight up from underneath — can you see the top?"},
- "thu-7":{e:"⛵",n:"Seine Sailor",m:"From the boat, wave to people on a bridge 👋 and find the <b>stone soldier</b> on the Pont de l'Alma."},
+ "thu-7-off":{e:"⛵",n:"Seine Sailor",m:"From the boat, wave to people on a bridge 👋 and find the <b>stone soldier</b> on the Pont de l'Alma."},
  "thu-8":{e:"🚇",n:"Tower Train",m:"Look out of the train window when it goes outside. Who sees the Eiffel Tower first? 👀"},
- "thu-9":{e:"🍽️",n:"Bistro Star",m:"Say <b>« Merci ! »</b> to the waiter. (Say it: <i>mair-SEE</i>) 😊"},
+ "thu-9-off":{e:"🍽️",n:"Bistro Star",m:"Say <b>« Merci ! »</b> to the waiter. (Say it: <i>mair-SEE</i>) 😊"},
  "fri-2":{e:"🔺",n:"Glass Pyramid",m:"Count the <b>triangles</b> you can see on the Pyramid. More than 10? More than 100?"},
  "fri-3":{e:"🎠",n:"Carousel Rider",m:"Ride the carousel or play on the swings, then find the <b>pink arch with horses on top</b>!"},
  "fri-4":{e:"🗿",n:"Ancient Obelisk",m:"Find a <b>bird</b> carved on the 3,300-year-old obelisk. It's a secret Egyptian letter!"},
@@ -490,6 +491,7 @@ const FACTS=[
  "Paris has more than 450 parks and gardens to play in! 🌳"
 ];
 const sget=k=>store(k)==="1";
+Object.keys(STK).forEach(k=>{ if(k.endsWith("-off")) delete STK[k]; });
 const UI_t=(k,v)=>t(k,v);
 function stkCount(){return Object.keys(STK).filter(id=>sget("stk-"+id)).length+BINGO.filter((b,i)=>sget("bingo-"+i)).length;}
 function stkTotal(){return Object.keys(STK).length+BINGO.length;}
@@ -568,8 +570,8 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-lang]"); i
 const enc = s => encodeURIComponent(s);
 const navURL = p => `https://www.google.com/maps/dir/?api=1&destination=${enc(p.q)}&travelmode=transit`;
 const placeURL = p => `https://www.google.com/maps/search/?api=1&query=${enc(p.q)}`;
-const dayURL = stops => {
-  const seen=[]; stops.forEach(s=>{ if(!seen.length||seen[seen.length-1]!==s.p) seen.push(s.p)});
+const dayURL = (stops,key) => {
+  const seen=[]; stops.forEach((s,j)=>{ if(key&&OFF.has(key+"-"+j)) return; if(!seen.length||seen[seen.length-1]!==s.p) seen.push(s.p)});
   return "https://www.google.com/maps/dir/"+seen.map(p=>enc(p.q)).join("/");
 };
 const ICON_NAV='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4.5 20.3l.7.7L12 18l6.8 3 .7-.7z"/></svg>';
@@ -653,7 +655,7 @@ function computeDay(key){
   st.forEach((s,j)=>{
     const id=key+"-"+j, R=RULES[id]||{};
     const dur = j<st.length-1 ? P[j+1]-P[j] : 75;
-    const arr=tget("arr-"+id), dn=tget("done-t-"+id), sk=store("skip-"+id)==="1";
+    const arr=tget("arr-"+id), dn=tget("done-t-"+id), sk=OFF.has(id)||store("skip-"+id)==="1";
     let start = arr!==null ? arr : (cur===null ? P[j] : cur);
     if(arr===null && R.notBefore) start=Math.max(start,toMin(R.notBefore));
     let state = sk?"skip": dn!==null?"done": arr!==null?"here": (j<lastRec?"passed":"todo");
@@ -701,7 +703,7 @@ function render(key){
   const D=DAYS[key], el=document.getElementById("day-"+key);
   el.innerHTML=`<div class="summary"><h2>${D.title}</h2><p>${D.blurb}</p>
     <div class="chips">${D.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops)}" target="_blank" rel="noopener">${ICON_PIN} ${t("wholeDay")}</a></div></div>
+    <div class="btnrow"><a class="btn primary" href="${dayURL(D.stops,key)}" target="_blank" rel="noopener">${ICON_PIN} ${t("wholeDay")}</a></div></div>
     <div class="map"><div class="lmap" id="lmap-${key}">${window.L?"":mapSVG(D.stops)}${window.L?'<button class="locate" data-locate="'+key+'">'+t("whereAmI")+'</button>':""}</div><div class="cap">${t("mapCap")}</div></div>
     <div class="banner" id="bn-${key}"></div>
     <ol class="timeline" id="tl-${key}"></ol>`;
@@ -711,8 +713,9 @@ function render(key){
 function renderTimeline(key){
   const D=DAYS[key], T=computeDay(key), tl=document.getElementById("tl-"+key); if(!tl) return;
   let n=0, nextJ=-1;
-  T.forEach((x,j)=>{ if(nextJ<0 && D.stops[j].k!=="move" && (x.state==="todo"||x.state==="here")) nextJ=j; });
+  T.forEach((x,j)=>{ if(nextJ<0 && !OFF.has(key+"-"+j) && D.stops[j].k!=="move" && (x.state==="todo"||x.state==="here")) nextJ=j; });
   tl.innerHTML=D.stops.map((s,i)=>{
+    if(OFF.has(key+"-"+i)) return "";
     const label = s.k==="move" ? "→" : (s.k==="home"?"⌂":++n);
     const id=key+"-"+i, x=T[i];
     const cls=(x.state==="done"||x.state==="passed")?" done":x.state==="skip"?" skip":"";
@@ -781,7 +784,23 @@ function renderLouvre(){
 }
 
 applyLang();
+DAYS.thu.chips=DAYS.thu.chips.filter(c=>!/Picotin/.test(c));
 render("thu"); render("fri"); render("sat"); renderLouvre();
+(function(){
+  let q=null; try{ q=new URLSearchParams(location.search).get("done"); }catch(e){}
+  if(!q) return;
+  const days=q.split(",").map(x=>x.trim()).filter(Boolean);
+  let added=0, emo=[];
+  Object.keys(STK).forEach(id=>{ if(days.some(d=>id.startsWith(d+"-")) && store("stk-"+id)!=="1"){ store("stk-"+id,"1"); added++; emo.push(STK[id].e); } });
+  try{ history.replaceState(null,"",location.pathname+location.hash); }catch(e){}
+  setTimeout(()=>{
+    confetti(emo[0]||"⭐");
+    document.getElementById("mbox").innerHTML=`<div class="big">🏆</div><h3>${t("newSticker")}</h3><div style="font-size:34px;line-height:1.4">${emo.join(" ")||"⭐"}</div>
+      <p>${t("collectedOf",{n:stkCount(),t:stkTotal()})}</p>
+      <div class="row"><button class="bigbtn yes" data-goto="stickers" data-close>${t("seeStickers")}</button></div>`;
+    document.getElementById("modal").classList.add("on"); updTab();
+  },600);
+})();
 const MAPS={};
 const PINCOL={sight:"#1f3a5f",food:"#c8423b",play:"#2f7d5b",home:"#b98b2e"};
 function initMap(key){
@@ -801,7 +820,8 @@ function initMap(key){
   m.attributionControl.setPrefix(false);
   useSource(0);
   const pts=[]; let n=0; const seen=new Map();
-  DAYS[key].stops.forEach(s=>{
+  DAYS[key].stops.forEach((s,j)=>{
+    if(OFF.has(key+"-"+j)) return;
     if(s.k==="move") return; if(s.k!=="home") n++;
     const lbl=s.k==="home"?"⌂":n;
     if(seen.has(s.p)){ seen.get(s.p).push(lbl+" · "+s.h); return; }
