@@ -170,7 +170,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
       <h2>Book ahead</h2>
       <ul>
         <li><b>Notre-Dame</b>: free, timed slot on <a href="https://www.notredamedeparis.fr/en/">notredamedeparis.fr</a> (opens 2–3 days before). Walk-ins are usually fine in November.</li>
-        <li><b>Le Procope</b> (Thu lunch), <b>Le Picotin</b> (Thu dinner), <b>Café Marly</b> (Fri lunch), <b>Le Square Trousseau</b> (Fri dinner): tap "Map" for each place's phone and booking link. Ask for a high chair and room for a stroller.</li>
+        <li><b>Breizh Café Odéon</b> (Thu lunch, optional), <b>Le Picotin</b> (Thu dinner), <b>Café Marly</b> (Fri lunch), <b>Le Square Trousseau</b> (Fri dinner): tap "Map" for each place's phone and booking link. Ask for a high chair and room for a stroller.</li>
         <li><b>Seine cruise</b>: <a href="https://www.bateauxparisiens.com/">Bateaux Parisiens</a> 1-hour sightseeing cruise. Departure times change by season, so check Thursday's times and aim for about 16:30–17:00.</li>
       </ul>
     </section>
@@ -184,7 +184,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
     </section>
     <section class="info">
       <h2>A story thread for the kids</h2>
-      <p>Napoleon ties the two days together. Thursday: he crowned himself emperor in <b>Notre-Dame</b> and left his hat at <b>Le Procope</b>. Friday: you'll see the giant painting of that coronation at the <b>Louvre</b>, walk where his palace stood in the <b>Tuileries</b> (the Mona Lisa hung in his bedroom), and visit his generals' graves at <b>Père Lachaise</b>, the cemetery he opened. Tell the 4½-year-old to look out for "the little emperor with the big hat".</p>
+      <p>Napoleon ties the two days together. Thursday: he crowned himself emperor in <b>Notre-Dame</b> and left his hat at <b>Le Procope</b> (peek in, next to the crêperie). Friday: you'll see the giant painting of that coronation at the <b>Louvre</b>, walk where his palace stood in the <b>Tuileries</b> (the Mona Lisa hung in his bedroom), and visit his generals' graves at <b>Père Lachaise</b>, the cemetery he opened. Tell the 4½-year-old to look out for "the little emperor with the big hat".</p>
     </section>
   </div>
 </main>
@@ -196,7 +196,7 @@ const HOME = {name:"Home", q:"Picpus metro station, Paris", lat:48.8451, lon:2.4
 const P = {
   nd:{q:"Cathédrale Notre-Dame de Paris", lat:48.8530, lon:2.3499},
   isl:{q:"Berthillon, 29-31 Rue Saint-Louis en l'Île, 75004 Paris", lat:48.8516, lon:2.3567},
-  procope:{q:"Le Procope, 13 Rue de l'Ancienne Comédie, 75006 Paris", lat:48.8530, lon:2.3389},
+  breizh:{q:"Breizh Café Odéon, 1 Rue de l'Odéon, 75006 Paris", lat:48.8521, lon:2.3391},
   lux:{q:"Aire de jeux Jardin du Luxembourg, 75006 Paris", lat:48.8452, lon:2.3340},
   troc:{q:"Parvis des Droits de l'Homme, Trocadéro, 75016 Paris", lat:48.8620, lon:2.2877},
   bateaux:{q:"Bateaux Parisiens, Port de la Bourdonnais, 75007 Paris", lat:48.8597, lon:2.2932},
@@ -214,7 +214,7 @@ const DAYS = {
  thu:{
   title:"Thursday · The classic sights",
   blurb:"Île de la Cité in the morning, lunch on the Left Bank, a playground and nap in the Luxembourg Gardens, then the Eiffel Tower and a Seine cruise at sunset.",
-  chips:["≈ 9:30 → 19:00","Dry, 2–10 °C","Lunch: Le Procope","Dinner: Le Picotin"],
+  chips:["≈ 9:30 → 19:00","Dry, 2–10 °C","Lunch: crêpes, Breizh Café","Dinner: Le Picotin"],
   stops:[
    {t:"09:30",k:"home",p:HOME,h:"Leave home",d:"Head to Notre-Dame: about 30–35 min by Metro (line 1 from Nation to Hôtel de Ville) or a step-free bus. Tap Directions and pick whichever suits the stroller."},
    {t:"10:10",k:"sight",p:P.nd,h:"Notre-Dame de Paris",tags:["free","book"],
@@ -229,12 +229,12 @@ const DAYS = {
     kids:"On Pont de la Tournelle a tall statue of <b>Sainte Geneviève</b>, the patron saint of Paris, faces the city. The story goes that she saved Paris from Attila the Hun by getting everyone to pray instead of running away.",
     tip:"Flat and quiet, so this works well if the 4½-year-old wants to walk.",
     story:`<p>Until the 1600s this was two swampy islets used for grazing cows and fighting duels. In 1614 developers joined them together, built quays and bridges, and laid out a planned luxury district, one of the first in Europe. It has barely changed since, which is why it feels like a village.</p>`},
-   {t:"12:15",k:"food",p:P.procope,h:"Lunch · Le Procope",tags:["book"],
-    d:"Paris's oldest café-restaurant, opened in 1686 in Saint-Germain, about 20 min on foot along the Seine. Inside it's like a museum: red walls, chandeliers, and portraits of the famous people who ate here. It's a proper brasserie serving classic French dishes, open all day. It feels special but is relaxed about families.",
-    kids:"Near the entrance, look for <b>Napoleon's hat</b> in a glass case (story below).",
-    tip:"Book for 12:15 and ask for a high chair. Order a classic like coq au vin or a roast chicken to share with the kids.",
-    story:`<p>Procope was opened by a Sicilian, Francesco Procopio, and helped make coffee fashionable in Paris. In the 1700s it was the meeting place of the Enlightenment: Voltaire, Diderot and Benjamin Franklin all came here, and during the Revolution so did Danton, Marat and Robespierre.</p>
-    <p><b>The hat.</b> As a young, penniless artillery officer, Napoleon Bonaparte is said to have run up a bill he couldn't pay, so he left his bicorne hat as security. The restaurant still displays a hat said to be his.</p>`},
+   {t:"12:15",k:"food",p:P.breizh,h:"Lunch · Breizh Café Odéon (crêpes)",tags:["kid"],
+    d:"A quick, easy French lunch: crêpes from Brittany at the Carrefour de l'Odéon, about 20 min on foot from Île Saint-Louis along the Seine and 5 min from the Luxembourg Gardens. Start with a savoury buckwheat <b>galette</b> (try a 'complète': ham, cheese and egg), then a sweet <b>crêpe</b> with butter and sugar or chocolate. Traditionally you drink cider from a bowl; for the kids, apple juice. The service is quick and there's a set lunch menu on weekdays.",
+    kids:"Watch the crêpes being made on the big round hot plates! A galette is brown (buckwheat) and salty, and a crêpe is golden and sweet.",
+    tip:"Phone +33 1 42 49 34 73 for 12:00 and ask for « une chaise haute ». Arriving right at noon beats the lunch rush.",
+    story:`<p><b>Napoleon's hat is round the corner.</b> Le Procope, Paris's oldest café (1686), is a 2-minute walk away on Rue de l'Ancienne Comédie. Voltaire and Benjamin Franklin drank coffee there, and as a penniless young officer Napoleon is said to have left his hat as security for a bill he couldn't pay. A hat said to be his is displayed in the window area, so peek in on your way past.</p>
+    <p><b>Crêpes and Paris.</b> Galettes come from Brittany, where buckwheat grew well on poor soil. Thousands of Bretons moved to Paris in the 1800s and settled around the Montparnasse station, where trains from Brittany arrived, which is why Paris has so many crêperies.</p>`},
    {t:"13:45",k:"play",p:P.lux,h:"Jardin du Luxembourg · nap stroll + playground",tags:["kid","nap"],
     d:"An 8-minute walk. This is Paris's favourite garden: an Italian-style palace, a big octagonal pond, avenues of chestnut trees and about a hundred statues. Do a slow loop past the palace and pond so the little one can nap in the stroller. Then go to the playground in the southwest corner (small fee, about €3 per child aged 3+, €1 per adult), one of the best in Paris, with a separate fenced area for toddlers.",
     kids:"Look for the small <b>Statue of Liberty</b> in the west part of the garden. It's a copy by the same sculptor as the one in New York.",
@@ -347,7 +347,7 @@ const LOUVRE = [
 const STK={
  "thu-1":{e:"⛪",n:"Cathedral",m:"Find the bronze star called <b>Point Zéro</b> on the ground in front of Notre-Dame and stand on it. Then spot a stone monster on the roof! 👹"},
  "thu-2":{e:"🍦",n:"Ice Cream Island",m:"Find the tall statue of <b>Sainte Geneviève</b> on the bridge. Then eat an ice cream (or a hot chocolate)!"},
- "thu-3":{e:"🎩",n:"Napoleon's Hat",m:"Find <b>Napoleon's hat</b> in the glass box near the door. How big is it?"},
+ "thu-3":{e:"🥞",n:"Crêpe Champion",m:"Watch a crêpe being made on the big round hot plate, then finish your sweet crêpe! Bonus: say « Une crêpe au chocolat, s'il vous plaît ! » 🍫"},
  "thu-4":{e:"🛝",n:"Garden Explorer",m:"Go down the slide! Can you find the <b>tiny Statue of Liberty</b> hiding in the garden?"},
  "thu-6":{e:"🗼",n:"Eiffel Tower",m:"Make an Eiffel Tower with your arms for the photo! 🙆 Look straight up from underneath — can you see the top?"},
  "thu-7":{e:"⛵",n:"Seine Sailor",m:"From the boat, wave to people on a bridge 👋 and find the <b>stone soldier</b> on the Pont de l'Alma."},
