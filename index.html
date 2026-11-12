@@ -89,6 +89,46 @@ section.info li{margin:5px 0}
 .floors{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;font-size:12.5px}
 .floors div{background:var(--soft);border-radius:10px;padding:8px}
 .floors b{display:block;color:var(--navy)}
+
+.btn.stk{background:#fff4d6;border-color:#e2b34a;color:#7a5a17}
+.btn.stk.got{background:#e3f2ea;border-color:#7cc29b;color:#22603f}
+.modal{position:fixed;inset:0;background:rgba(20,25,40,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.on{display:flex}
+.mbox{background:#fffdf8;border-radius:22px;max-width:380px;width:100%;padding:22px 20px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3);animation:pop .35s ease}
+.mbox .big{font-size:84px;line-height:1;margin:4px 0 6px;display:inline-block;animation:bob 1.6s ease-in-out infinite}
+.mbox h3{font-family:Fraunces,serif;font-size:22px;margin:4px 0}
+.mbox .mission{font-size:17px;background:#fff4d6;border-radius:14px;padding:12px;margin:12px 0}
+.mbox .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.bigbtn{font:700 17px Inter;border:0;border-radius:14px;padding:12px 18px;cursor:pointer}
+.bigbtn.yes{background:#2f7d5b;color:#fff}.bigbtn.no{background:#eee;color:#444}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.confetti{position:fixed;top:-40px;z-index:1100;pointer-events:none;font-size:26px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.hero{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#1f3a5f,#3b2e5a);color:#fff;border-radius:18px;padding:14px;margin:16px 0}
+.hero .pigeon{font-size:54px;animation:bob 2s ease-in-out infinite;cursor:pointer}
+.bubble{background:#fff;color:#1d2433;border-radius:14px;padding:10px 12px;font-size:14px;position:relative;flex:1}
+.bubble:before{content:"";position:absolute;left:-8px;top:18px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.level{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:12px 0}
+.level .lv{font:700 18px Fraunces,serif}
+.bar{height:16px;background:#f0e8d8;border-radius:99px;overflow:hidden;margin-top:8px}
+.bar div{height:100%;background:linear-gradient(90deg,#e2b34a,#c8423b);border-radius:99px;transition:width .6s}
+.book{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 12px 6px;margin:12px 0}
+.book h2{font-family:Fraunces,serif;font-size:19px;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.sticker{border-radius:16px;padding:10px 4px;text-align:center;font-size:11.5px;font-weight:600;min-height:104px;cursor:pointer;border:2px dashed #d9cfbd;background:#faf6ee;color:#a49a88}
+.sticker .e{font-size:42px;display:block;line-height:1.2;filter:grayscale(1) opacity(.25)}
+.sticker.got{border:3px solid #fff;background:radial-gradient(circle at 30% 25%,#fff8e1,#ffe3a3);color:#5a4210;box-shadow:0 3px 10px rgba(185,139,46,.35);transform:rotate(-2deg)}
+.sticker.got:nth-child(even){transform:rotate(2deg)}
+.sticker.got .e{filter:none}
+.sticker.got:active{animation:wiggle .4s}
+.bingo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bingo button{aspect-ratio:1;border-radius:16px;border:2px solid #e7e0d3;background:#fff;font-size:36px;cursor:pointer;position:relative}
+.bingo button small{display:block;font:600 11px Inter;color:#5f6779}
+.bingo button.hit{background:#e3f2ea;border-color:#2f7d5b}
+.bingo button.hit:after{content:"✓";position:absolute;top:4px;right:8px;font:800 18px Inter;color:#2f7d5b}
+.reset{background:none;border:0;color:#a49a88;font-size:12px;text-decoration:underline;cursor:pointer;margin:6px 0}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 </style>
 </head>
@@ -99,16 +139,18 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 </header>
 
 <nav class="tabs" role="tablist">
-  <button class="tab" role="tab" data-day="thu" aria-selected="true">Thursday<small>Notre-Dame · Eiffel</small></button>
-  <button class="tab" role="tab" data-day="fri" aria-selected="false">Friday<small>Louvre · Père Lachaise</small></button>
-  <button class="tab" role="tab" data-day="louvre" aria-selected="false">Louvre<small>Route inside</small></button>
-  <button class="tab" role="tab" data-day="info" aria-selected="false">Practical<small>Tickets · tips</small></button>
+  <button class="tab" role="tab" data-day="thu" aria-selected="true">🗼 Thu<small>Notre-Dame · Eiffel</small></button>
+  <button class="tab" role="tab" data-day="fri" aria-selected="false">🏛️ Fri<small>Louvre · gardens</small></button>
+  <button class="tab" role="tab" data-day="louvre" aria-selected="false">🖼️ Louvre<small>Route inside</small></button>
+  <button class="tab" role="tab" data-day="stickers" aria-selected="false">⭐ Kids<small id="tabcount">Sticker book</small></button>
+  <button class="tab" role="tab" data-day="info" aria-selected="false">ℹ️ Info<small>Tips</small></button>
 </nav>
 
 <main class="wrap">
   <div class="day on" id="day-thu"></div>
   <div class="day" id="day-fri"></div>
   <div class="day" id="day-louvre"></div>
+  <div class="day" id="day-stickers"></div>
   <div class="day" id="day-info">
     <section class="info">
       <h2>Weather</h2>
@@ -146,6 +188,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
     </section>
   </div>
 </main>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
 <footer>Times are a guide. Directions open Google Maps from wherever you are. Ticks are saved on this device only.</footer>
 
 <script>
@@ -300,6 +343,97 @@ const LOUVRE = [
   tip:"If the kids are done, skip it. Go straight back to the Pyramid and out to lunch."},
 ];
 
+
+const STK={
+ "thu-1":{e:"⛪",n:"Cathedral",m:"Find the bronze star called <b>Point Zéro</b> on the ground in front of Notre-Dame and stand on it. Then spot a stone monster on the roof! 👹"},
+ "thu-2":{e:"🍦",n:"Ice Cream Island",m:"Find the tall statue of <b>Sainte Geneviève</b> on the bridge. Then eat an ice cream (or a hot chocolate)!"},
+ "thu-3":{e:"🎩",n:"Napoleon's Hat",m:"Find <b>Napoleon's hat</b> in the glass box near the door. How big is it?"},
+ "thu-4":{e:"🛝",n:"Garden Explorer",m:"Go down the slide! Can you find the <b>tiny Statue of Liberty</b> hiding in the garden?"},
+ "thu-6":{e:"🗼",n:"Eiffel Tower",m:"Make an Eiffel Tower with your arms for the photo! 🙆 Look straight up from underneath — can you see the top?"},
+ "thu-7":{e:"⛵",n:"Seine Sailor",m:"From the boat, wave to people on a bridge 👋 and find the <b>stone soldier</b> on the Pont de l'Alma."},
+ "thu-8":{e:"🚇",n:"Tower Train",m:"Look out of the train window when it goes outside. Who sees the Eiffel Tower first? 👀"},
+ "thu-9":{e:"🍽️",n:"Bistro Star",m:"Say <b>« Merci ! »</b> to the waiter. (Say it: <i>mair-SEE</i>) 😊"},
+ "fri-2":{e:"🔺",n:"Glass Pyramid",m:"Count the <b>triangles</b> you can see on the Pyramid. More than 10? More than 100?"},
+ "fri-3":{e:"🎠",n:"Carousel Rider",m:"Ride the carousel or play on the swings, then find the <b>pink arch with horses on top</b>!"},
+ "fri-4":{e:"🗿",n:"Ancient Obelisk",m:"Find a <b>bird</b> carved on the 3,300-year-old obelisk. It's a secret Egyptian letter!"},
+ "fri-6":{e:"🐈",n:"Cemetery Cat",m:"Treasure hunt: find a <b>tomb like a tiny house</b>, an <b>angel</b>… and maybe a <b>cat</b>! 🐾"},
+ "fri-8":{e:"🖍️",n:"Chalk Artist",m:"Draw the <b>Eiffel Tower</b> (or a pigeon!) with the chalk at the table."},
+ "louvre-1":{e:"🏰",n:"Castle Moat",m:"Touch the 800-year-old castle wall and find a <b>heart</b> ❤️ carved in a stone."},
+ "louvre-2":{e:"🦁",n:"Great Sphinx",m:"The sphinx is a lion with a king's head. Do your <b>quietest ROAR</b>! 🤫"},
+ "louvre-3":{e:"🏺",n:"Mummy Hunter",m:"Walk <b>inside the tomb</b>, then find a <b>cat statue</b> and an <b>owl</b> in the hieroglyphs. 🦉"},
+ "louvre-4":{e:"🏛️",n:"Venus de Milo",m:"She lost her arms! What do <b>you</b> think she was holding? An apple? A mirror?"},
+ "louvre-5":{e:"🕊️",n:"Winged Victory",m:"Stand like her: push your arms back like <b>wings</b> and lean into the wind! 💨"},
+ "louvre-6":{e:"☀️",n:"Sun King Hall",m:"Find the <b>sun</b> with a face painted on the golden ceiling."},
+ "louvre-7":{e:"🖼️",n:"Mona Lisa",m:"Can you <b>smile like Mona Lisa</b>? Do her eyes follow you when you walk?"},
+ "louvre-8":{e:"👑",n:"Emperor's Crown",m:"In the giant painting, find the <b>crown</b>, the <b>Pope</b>, and Napoleon's mum on the balcony!"},
+ "louvre-9":{e:"💎",n:"Palace Sparkle",m:"Count the giant <b>sparkly chandeliers</b>! ✨"}
+};
+const BINGO=[["🐦","Pigeon"],["🥖","Baguette"],["🚲","Bicycle"],["🐕","Dog"],["🇫🇷","Flag"],["🛴","Scooter"],["🥐","Croissant"],["🌉","Bridge"],["🚌","Green bus"]];
+const LEVELS=[[0,"🐣","Little Tourist"],[4,"🧭","Paris Explorer"],[9,"🗺️","Junior Guide"],[14,"🎖️","Super Guide"],[19,"👑","Emperor of Paris"]];
+const FACTS=[
+ "Coo! I'm Pierre the Pigeon. Collect stickers at every stop! 🐦",
+ "The Eiffel Tower grows about 15 cm taller in summer, because heat makes metal stretch! 🗼",
+ "The Eiffel Tower is repainted by hand every 7 years. It takes 60 tonnes of paint! 🎨",
+ "Notre-Dame has stone monsters on the roof. Some are dragons, some are goats! 👹",
+ "There are 37 bridges over the Seine in Paris. Can you count some? 🌉",
+ "The Louvre was a real castle with a moat 800 years ago! 🏰",
+ "Napoleon left his hat at a restaurant because he couldn't pay. Oops! 🎩",
+ "The Mona Lisa has no eyebrows. Look closely! 🖼️",
+ "French children say « Bonjour ! » when they walk into a shop. Try it! 👋",
+ "Paris has more than 450 parks and gardens to play in! 🌳"
+];
+const sget=k=>store(k)==="1";
+function stkCount(){return Object.keys(STK).filter(id=>sget("stk-"+id)).length+BINGO.filter((b,i)=>sget("bingo-"+i)).length;}
+function stkTotal(){return Object.keys(STK).length+BINGO.length;}
+function level(n){let L=LEVELS[0];LEVELS.forEach(l=>{if(n>=l[0])L=l});return L;}
+function stkBtn(id){const got=sget("stk-"+id);return `<div class="btnrow"><button class="btn stk${got?" got":""}" data-stk="${id}">${got?"✅ Sticker collected "+STK[id].e:"⭐ Sticker mission"}</button></div>`;}
+function updTab(){const t=document.getElementById("tabcount"); if(t) t.textContent=stkCount()+" / "+stkTotal()+" stickers";}
+
+let actx;
+function ding(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  [523,659,784,1047].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type="triangle";o.frequency.value=f;
+  const t=actx.currentTime+i*.09;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.35);
+  o.connect(g).connect(actx.destination);o.start(t);o.stop(t+.4);});}catch(e){}}
+function confetti(e){const set=[e,"⭐","🎉","✨","🎈",e];for(let i=0;i<34;i++){const c=document.createElement("div");c.className="confetti";
+  c.textContent=set[i%set.length];c.style.left=Math.random()*100+"vw";c.style.animationDuration=(1.6+Math.random()*1.6)+"s";c.style.animationDelay=(Math.random()*.4)+"s";
+  document.body.appendChild(c);setTimeout(()=>c.remove(),3800);}}
+function closeModal(){document.getElementById("modal").classList.remove("on");}
+function openMission(id){const S=STK[id],got=sget("stk-"+id);
+  document.getElementById("mbox").innerHTML=`<div class="big">${S.e}</div><h3>${S.n}</h3>
+   ${got?`<p>You already have this sticker! 🎉</p>`:`<div class="mission">🔍 <b>Mission:</b><br>${S.m}</div>`}
+   <div class="row">${got?`<button class="bigbtn no" data-close>Close</button>`:`<button class="bigbtn yes" data-win="${id}">🎉 We did it!</button><button class="bigbtn no" data-close>Later</button>`}</div>`;
+  document.getElementById("modal").classList.add("on");}
+function collect(id){store("stk-"+id,"1");const S=STK[id];ding();confetti(S.e);
+  const n=stkCount(),L=level(n),prev=level(n-1);
+  document.getElementById("mbox").innerHTML=`<div class="big">${S.e}</div><h3>New sticker!</h3><p><b>${S.n}</b> is in your sticker book.</p>
+   ${L!==prev?`<div class="mission">🎊 LEVEL UP! You are now<br><b style="font-size:20px">${L[1]} ${L[2]}</b></div>`:`<p>${n} of ${stkTotal()} stickers collected</p>`}
+   <div class="row"><button class="bigbtn yes" data-goto="stickers" data-close>See my stickers ⭐</button><button class="bigbtn no" data-close>Keep exploring</button></div>`;
+  document.querySelectorAll(`[data-stk="${id}"]`).forEach(b=>{b.classList.add("got");b.textContent="✅ Sticker collected "+S.e;});
+  updTab();}
+let factI=0;
+function renderStickers(){
+  const el=document.getElementById("day-stickers"),n=stkCount(),T=stkTotal(),L=level(n);
+  const nextL=LEVELS.find(l=>l[0]>n);
+  const group=(title,prefix)=>`<div class="book"><h2>${title}</h2><div class="grid">${Object.keys(STK).filter(k=>k.startsWith(prefix)).map(id=>{const g=sget("stk-"+id);
+     return `<div class="sticker${g?" got":""}" data-stk="${id}"><span class="e">${STK[id].e}</span>${g?STK[id].n:"?"}</div>`}).join("")}</div></div>`;
+  el.innerHTML=`<div class="hero"><div class="pigeon" id="pigeon">🐦</div><div class="bubble" id="fact">${FACTS[factI%FACTS.length]}</div></div>
+   <div class="level"><div class="lv">${L[1]} ${L[2]}</div><div style="color:var(--muted);font-size:13px">${n} of ${T} stickers${nextL?` · ${nextL[0]-n} more to become ${nextL[1]} ${nextL[2]}`:" · You collected everything! 🎉"}</div>
+   <div class="bar"><div style="width:${Math.round(n/T*100)}%"></div></div></div>
+   ${group("🗼 Thursday stickers","thu-")}${group("🏛️ Friday stickers","fri-")}${group("🖼️ Louvre stickers","louvre-")}
+   <div class="book"><h2>🔎 Paris Bingo: spot them anywhere!</h2><div class="bingo">${BINGO.map((b,i)=>`<button class="${sget("bingo-"+i)?"hit":""}" data-bingo="${i}">${b[0]}<small>${b[1]}</small></button>`).join("")}</div>
+   <p style="font-size:12.5px;color:var(--muted)">Tap a picture when you see it. Each one counts as a sticker!</p></div>
+   <div style="text-align:center"><button class="reset" id="reset">Start the sticker book again</button></div>`;
+}
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const st=t.closest("[data-stk]"); if(st){openMission(st.dataset.stk);return;}
+  const w=t.closest("[data-win]"); if(w){collect(w.dataset.win);return;}
+  const bg=t.closest("[data-bingo]"); if(bg){const k="bingo-"+bg.dataset.bingo,on=!sget(k);store(k,on?"1":"0");if(on){ding();confetti(BINGO[bg.dataset.bingo][0]);}renderStickers();updTab();return;}
+  if(t.closest("#pigeon")){factI++;document.getElementById("fact").textContent=FACTS[factI%FACTS.length];return;}
+  if(t.id==="reset"){if(t.dataset.sure){Object.keys(STK).forEach(id=>store("stk-"+id,"0"));BINGO.forEach((b,i)=>store("bingo-"+i,"0"));renderStickers();updTab();}else{t.dataset.sure=1;t.textContent="Tap again to really erase all stickers";}return;}
+  if(t.closest("[data-close]")||t.id==="modal"){closeModal();if(document.getElementById("day-stickers").classList.contains("on"))renderStickers();}
+});
+
 const enc = s => encodeURIComponent(s);
 const navURL = p => `https://www.google.com/maps/dir/?api=1&destination=${enc(p.q)}&travelmode=transit`;
 const placeURL = p => `https://www.google.com/maps/search/?api=1&query=${enc(p.q)}`;
@@ -339,13 +473,14 @@ function cardInner(s, id, done, buttons){
   return `<div class="card">
     <label class="done-toggle"><input type="checkbox" ${done?"checked":""}> done</label>
     <div class="time">${s.t}</div>
-    <h3>${s.h}</h3>
+    <h3>${STK[id]?STK[id].e+" ":""}${s.h}</h3>
     ${s.where?`<div class="where">📍 ${s.where}</div>`:""}
     ${tags?`<div>${tags}</div>`:""}
     <p>${s.d}</p>
     ${s.kids?`<div class="kids">🧒 ${s.kids}</div>`:""}
     ${s.tip?`<div class="tip">💡 ${s.tip}</div>`:""}
     ${s.story?`<details class="story"><summary>History & stories</summary>${s.story}</details>`:""}
+    ${STK[id]?stkBtn(id):""}
     ${buttons||""}
   </div>`;
 }
@@ -448,6 +583,8 @@ document.addEventListener("click",e=>{
 function show(key){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", b.dataset.day===key));
   document.querySelectorAll(".day").forEach(d=>d.classList.toggle("on", d.id==="day-"+key));
+  if(key==="stickers") renderStickers();
+  updTab();
   if(DAYS[key]){ initMap(key); if(MAPS[key]) setTimeout(()=>MAPS[key].invalidateSize(),50); }
   if(location.hash!=="#"+key) history.replaceState(null,"","#"+key);
   window.scrollTo({top:0});
