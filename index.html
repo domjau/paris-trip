@@ -31,7 +31,8 @@ h1 span{color:var(--red)}
 .sub{color:var(--muted);margin:0}
 .wrap{max-width:760px;margin:0 auto;padding:0 14px 60px}
 .tabs{position:sticky;top:0;z-index:5;background:var(--paper);display:flex;gap:6px;padding:10px 12px;max-width:760px;margin:0 auto;border-bottom:1px solid var(--line)}
-.tab{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;font:600 13.5px Inter;color:var(--ink);cursor:pointer;min-width:0}
+.tabs{overflow-x:auto;scrollbar-width:none}
+.tab{flex:1 0 auto;min-width:64px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;font:600 13.5px Inter;color:var(--ink);cursor:pointer;min-width:0}
 .tab small{display:block;font-weight:400;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab[aria-selected=true]{background:var(--navy);border-color:var(--navy);color:#fff}
 .tab[aria-selected=true] small{color:#d6deea}
@@ -158,6 +159,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 <nav class="tabs" role="tablist">
   <button class="tab" role="tab" data-day="thu" aria-selected="true"><span data-ui="tabThu"></span><small data-ui="tabThuS"></small></button>
   <button class="tab" role="tab" data-day="fri" aria-selected="false"><span data-ui="tabFri"></span><small data-ui="tabFriS"></small></button>
+  <button class="tab" role="tab" data-day="sat" aria-selected="false"><span data-ui="tabSat"></span><small data-ui="tabSatS"></small></button>
   <button class="tab" role="tab" data-day="louvre" aria-selected="false"><span data-ui="tabLou"></span><small data-ui="tabLouS"></small></button>
   <button class="tab" role="tab" data-day="stickers" aria-selected="false"><span data-ui="tabKids"></span><small id="tabcount"></small></button>
   <button class="tab" role="tab" data-day="info" aria-selected="false"><span data-ui="tabInfo"></span><small data-ui="tabInfoS"></small></button>
@@ -166,6 +168,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 <main class="wrap">
   <div class="day on" id="day-thu"></div>
   <div class="day" id="day-fri"></div>
+  <div class="day" id="day-sat"></div>
   <div class="day" id="day-louvre"></div>
   <div class="day" id="day-stickers"></div>
   <div class="day" id="day-info"></div>
@@ -180,7 +183,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
 const UI_EN={
  title:"Paris <span>en famille</span>",
  sub:"Thursday 12 &amp; Friday 13 November 2026 · from our place in the 12e · Metro, bus &amp; on foot",
- tabThu:"🗼 Thu", tabThuS:"Notre-Dame · Eiffel", tabFri:"🏛️ Fri", tabFriS:"Louvre · gardens", tabLou:"🖼️ Louvre", tabLouS:"Route inside", tabKids:"⭐ Kids", tabInfo:"ℹ️ Info", tabInfoS:"Tips",
+ tabThu:"🗼 Thu", tabThuS:"Notre-Dame · Eiffel", tabFri:"🏛️ Fri", tabFriS:"Louvre · gardens", tabSat:"🐴 Sat", tabSatS:"Chantilly", satStk:"🐴 Saturday stickers", tabLou:"🖼️ Louvre", tabLouS:"Route inside", tabKids:"⭐ Kids", tabInfo:"ℹ️ Info", tabInfoS:"Tips",
  footer:"Times are a guide. Directions open Google Maps from wherever you are. Ticks are saved on this device only.",
  directions:"Directions", map:"Map", louvreGuide:"🏛 Louvre guide", wholeDay:"Whole day in Google Maps", whereAmI:"◎ Where am I?", locating:"Locating…", locBlocked:"Location blocked",
  mapCap:"Tap a pin for directions. Tap “History & stories” on any stop.", history:"History & stories", done:"done",
@@ -197,6 +200,7 @@ const UI_EN={
  louIntro:"This is one loop with no backtracking: start underground in the medieval castle, come up through Egypt and Greece, cross into Denon for the Victory, Mona Lisa and Napoleon, and finish near Café Marly. Have a snack break whenever the kids need it, and drop anything marked “Optional”.",
  louChip1:"10:00 → ~12:20", louChip2:"Levels −1, 0, 1 only", louChip3:"Stroller OK, lifts",
  louSully:"Castle moat (−1), Sphinx (−1), Egypt (0), Venus (0)", louDenon:"Winged Victory, Apollo, Mona Lisa, Coronation (1)", louRich:"Napoleon III apartments (1), Café Marly exit",
+ infoSat:`<section class="info"><h2>Saturday: Chantilly by train</h2><ul><li><b>Trains:</b> Paris Gare du Nord → Chantilly-Gouvieux. The TER regional train takes about 25 min and the RER D about 45 min. Buy tickets in the SNCF Connect app or at the station, because Metro/Navigo tickets don't cover Chantilly. Children under 4 travel free.</li><li><b>Lunch:</b> La Capitainerie, Saturday 13:00, table for 5, TheFork booking no. 1683270789. Restaurant phone: +33 6 11 07 01 56.</li><li><b>Winter hours:</b> château 10:00–17:00, park 10:00–18:00, Great Stables 12:00–17:00 (closed Tuesdays). One Domaine ticket covers all three; children under 7 get into the château free.</li></ul></section>`,
  louLink:"Today's room openings (louvre.fr)", backFri:"← Back to Friday",
  info:`
     <section class="info">
@@ -256,6 +260,13 @@ const P = {
   conc:{q:"Place de la Concorde, Paris", lat:48.8656, lon:2.3212},
   pl:{q:"Cimetière du Père-Lachaise, Boulevard de Ménilmontant, 75020 Paris", lat:48.8600, lon:2.3892},
   trous:{q:"Le Square Trousseau, 1 Rue Antoine Vollon, 75012 Paris", lat:48.8505, lon:2.3768},
+  gdn:{q:"Gare du Nord, Paris", lat:48.8809, lon:2.3553},
+  cgs:{q:"Gare de Chantilly-Gouvieux, Chantilly", lat:49.1872, lon:2.4597},
+  ecur:{q:"Grandes Écuries, Musée du Cheval, 7 Rue du Connétable, 60500 Chantilly", lat:49.1937, lon:2.4783},
+  chat:{q:"Château de Chantilly, 60500 Chantilly", lat:49.1940, lon:2.4857},
+  capi:{q:"La Capitainerie, Château de Chantilly, 60500 Chantilly", lat:49.1936, lon:2.4862},
+  hameau:{q:"Hameau du Parc de Chantilly, 60500 Chantilly", lat:49.1990, lon:2.4895},
+  ctown:{q:"Rue du Connétable, 60500 Chantilly", lat:49.1913, lon:2.4700},
 };
 
 const DAYS = {
@@ -351,6 +362,48 @@ const DAYS = {
     d:"A belle-époque bistro (zinc bar, mirrors, banquettes) facing a leafy square, 15 min from home. Classic French food and excellent desserts; kids get chalk to draw on the pavement. A lovely last-evening meal.",
     tip:"Book and ask for an early table. Le Picotin is the closer alternative.",
     story:`<p>The square was laid out in 1906 on the site of the old Hospice des Enfants-Trouvés, a hospital for abandoned babies. All around is the Faubourg Saint-Antoine, Paris's old furniture-makers' quarter. On 14 July 1789 its workers marched a few hundred metres west and stormed the Bastille, starting the French Revolution.</p>`}
+  ]},
+ sat:{
+  title:"Saturday · Chantilly: château, park & horses",
+  blurb:"A day trip by train to one of France's most beautiful châteaux: a fairy-tale castle on a lake, lunch in its 17th-century kitchens, a nap stroll in Le Nôtre's park, then the grandest horse stables in Europe.",
+  chips:["≈ 9:15 → 19:45","Train from Gare du Nord","Lunch: La Capitainerie 13:00","Château 10–17 · Stables 12–17"],
+  stops:[
+   {t:"09:15",k:"home",p:HOME,h:"Leave home",d:"Metro to Gare du Nord: about 30–35 min (line 2 from Nation to La Chapelle, which connects to Gare du Nord, or line 4/5). With the stroller, the bus may be easier. Tap Directions."},
+   {t:"09:20",k:"move",p:P.gdn,h:"To Gare du Nord (≈35 min)",d:"Buy train tickets on the SNCF Connect app or at the regional (TER) machines: Chantilly is outside the Paris transport zone, so a Metro ticket is not valid. Children under 4 travel free; the 4½-year-old needs a child ticket."},
+   {t:"10:00",k:"move",p:P.cgs,h:"Train to Chantilly-Gouvieux (≈25 min)",d:"Take a <b>TER</b> regional train (about 25 min, direct). The <b>RER D</b> also goes there but takes about 45 min. Check the departure board for 'Chantilly-Gouvieux'.",
+    kids:"Look out of the window: after the city come fields and then the big Chantilly forest. Who sees the first horse?"},
+   {t:"10:30",k:"sight",p:P.ecur,h:"Walk into town: racecourse & the Great Stables",tags:["free"],
+    d:"From the station it's about 25 min on foot to the château (the town centre is about 1 km away). The route along Rue du Connétable passes the famous <b>racecourse</b> and the enormous <b>Grandes Écuries</b> (Great Stables). You'll come back inside them this afternoon. A taxi from the station rank takes about 5 min if the kids are tired.",
+    tip:"Pavements are fine for the stroller. Carry snacks: the next proper meal is at 13:00.",
+    story:`<p>Chantilly has been the capital of French horse racing since its racecourse opened in 1834. The town still has thousands of racehorses training in the surrounding forest; you may see riders on the sandy tracks.</p>`},
+   {t:"11:15",k:"sight",p:P.chat,h:"Château de Chantilly",tags:["book"],
+    d:"A Renaissance château rising out of a lake, with one of France's greatest art collections inside (the <b>Musée Condé</b>, second only to the Louvre for old paintings). Walk through the grand apartments, the picture galleries hung floor to ceiling, and the library. Plan on about 1½ hours, then go down to lunch, which is inside the château. Children under 7 get in free.",
+    kids:"Count the <b>swans or ducks</b> in the moat around the castle. Inside, look for paintings with <b>horses</b> and <b>dogs</b>: the princes who lived here loved hunting.",
+    tip:"Winter hours are château 10:00–17:00, park 10:00–18:00 and stables 12:00–17:00 (closed Tuesdays). One 'Domaine' ticket covers everything. Mid-November the Christmas decorations may be starting.",
+    story:`<p><b>The Grand Condé.</b> In the 17th century this was the home of the Prince de Condé, a famous general and cousin of Louis XIV. In 1671 he threw a three-day feast here for the king, organised by his legendary steward <b>François Vatel</b>, and legend says that's where <b>whipped "Chantilly" cream</b> was born.</p>
+    <p><b>Revolution and rebirth.</b> The Revolution confiscated the estate and the main castle was demolished. In the 1870s the Duc d'Aumale, son of France's last king, rebuilt it to house his art collection. In 1884 he left everything to the Institut de France on one condition: <b>nothing may ever be moved or lent</b>. That's why the paintings still hang exactly as he arranged them.</p>
+    <p><b>World War I headquarters.</b> From late 1914 to 1916 Chantilly was the headquarters of the French army under General Joffre, and in 1915 the Allies held strategy conferences here.</p>`},
+   {t:"13:00",k:"food",p:P.capi,h:"Lunch · La Capitainerie (booked)",tags:["book","kid"],
+    d:"Your table for 5 is booked for <b>13:00</b>. The restaurant is inside the château, under the stone vaults of the 17th-century kitchens where Vatel cooked for the king. There's a huge open fireplace with meat roasting on the spit. Classic French food, a relaxed family atmosphere, and of course desserts with real <b>crème Chantilly</b>.",
+    kids:"Find the <b>giant fireplace</b>. It's big enough to roast a whole sheep! Then order something with <b>crème Chantilly</b> for dessert.",
+    tip:"Booking no. 1683270789 (TheFork). If you're running late, call the restaurant on +33 6 11 07 01 56 to keep your table.",
+    story:`<p>The kitchens were built underground beside the moat so that food could be prepared out of sight of the guests. Vatel organised legendary feasts here. Whipped cream existed before him, but Chantilly made it famous, and it's been called <i>crème Chantilly</i> ever since.</p>`},
+   {t:"14:30",k:"play",p:P.hameau,h:"The park: canals, gardens & the Hameau",tags:["kid","nap","free"],
+    d:"A slow stroller loop for the toddler's nap. Walk the formal <b>French gardens</b> by Le Nôtre (the gardener who later designed Versailles) along the <b>Grand Canal</b>, then go to the <b>Hameau</b>, a little village of thatched cottages hidden in the woods. There's plenty of space for the 4½-year-old to run.",
+    kids:"The Hameau was built as a <b>pretend village for princes</b> to play at being farmers. Find the cottage with a water wheel, and look for carp and ducks in the canals.",
+    tip:"The park closes at about 18:00 in winter. The paths are gravel but fine for most strollers.",
+    story:`<p>The Hameau was built in 1774, a few years <b>before</b> Marie Antoinette's famous hamlet at Versailles, which it inspired. The princes held picnics here, and according to tradition this is where whipped cream was first served to guests as <i>crème Chantilly</i>.</p>`},
+   {t:"15:45",k:"sight",p:P.ecur,h:"Great Stables & Living Horse Museum",tags:["kid"],
+    d:"The grandest stables in Europe, built 1719–1740 for 240 horses and over 400 hunting dogs. They look more like a palace than a stable. Inside, the <b>Musée du Cheval</b> has real horses, ponies and donkeys in their stalls, plus horse costumes, carriages and rocking horses. Under the great dome there are often short horse demonstrations, so ask at the entrance for today's times.",
+    kids:"Say « Bonjour ! » to a horse. Can you find a <b>pony</b>, a <b>donkey</b> and the <b>biggest horse</b> in the stables?",
+    tip:"The stables close at 17:00 in winter, so don't arrive later than about 16:00. They're on the way back to the station.",
+    story:`<p><b>A prince who wanted to come back as a horse.</b> Louis-Henri de Bourbon, Prince de Condé, is said to have believed he would be reborn as a horse, so he built stables fit for a prince. The building took 21 years.</p>
+    <p>During the Revolution the stables were looted, and the horses and hounds were taken away. They became a horse museum in 1982, and the riding company still performs shows under the dome.</p>`},
+   {t:"17:00",k:"food",p:P.ctown,h:"Goûter in town: real crème Chantilly",tags:["kid"],
+    d:"The French afternoon snack, the <b>goûter</b>. Pick a café or pâtisserie along Rue du Connétable for a hot chocolate and something with <b>crème Chantilly</b>, here, in the town that gave it its name. It's also a warm stop before the train.",
+    kids:"Real Chantilly cream is sweet whipped cream with a touch of vanilla. Taste it and give it a score out of 10!"},
+   {t:"18:00",k:"move",p:P.cgs,h:"Walk to the station & train home",d:"About 20 min on foot back to Chantilly-Gouvieux (or a taxi). Take a TER to Paris Gare du Nord (≈25 min), then Metro home. Check return trains in the SNCF Connect app."},
+   {t:"19:15",k:"move",p:HOME,h:"Home (≈35 min from Gare du Nord)",d:"Metro from Gare du Nord back to Nation / Picpus. Home around 19:45–20:00."}
   ]}
 };
 
@@ -406,6 +459,12 @@ const STK={
  "fri-4":{e:"🗿",n:"Ancient Obelisk",m:"Find a <b>bird</b> carved on the 3,300-year-old obelisk. It's a secret Egyptian letter!"},
  "fri-6":{e:"🐈",n:"Cemetery Cat",m:"Treasure hunt: find a <b>tomb like a tiny house</b>, an <b>angel</b>… and maybe a <b>cat</b>! 🐾"},
  "fri-8":{e:"🖍️",n:"Chalk Artist",m:"Draw the <b>Eiffel Tower</b> (or a pigeon!) with the chalk at the table."},
+ "sat-2":{e:"🚆",n:"Train Explorer",m:"Look out of the train window and find a <b>forest</b>, a <b>field</b> and a <b>horse</b>! 🌲🐎"},
+ "sat-4":{e:"🏰",n:"Lake Castle",m:"Count the <b>swans or ducks</b> in the castle moat, then find a painting with a <b>dog</b> inside! 🦢"},
+ "sat-5":{e:"🔥",n:"Giant Fireplace",m:"Find the <b>giant fireplace</b> in the old kitchen. Could a whole sheep fit inside? 🐑"},
+ "sat-6":{e:"🏡",n:"Secret Village",m:"Find the little <b>village of cottages</b> hidden in the woods, and the <b>water wheel</b>! 💧"},
+ "sat-7":{e:"🐴",n:"Horse Friend",m:"Say <b>« Bonjour ! »</b> to a horse, then find a <b>pony</b> and a <b>donkey</b>! 🫏"},
+ "sat-8":{e:"🍦",n:"Chantilly Cream",m:"Taste real <b>crème Chantilly</b> in the town where it was invented, and give it a score out of 10! 🥄"},
  "louvre-1":{e:"🏰",n:"Castle Moat",m:"Touch the 800-year-old castle wall and find a <b>heart</b> ❤️ carved in a stone."},
  "louvre-2":{e:"🦁",n:"Great Sphinx",m:"The sphinx is a lion with a king's head. Do your <b>quietest ROAR</b>! 🤫"},
  "louvre-3":{e:"🏺",n:"Mummy Hunter",m:"Walk <b>inside the tomb</b>, then find a <b>cat statue</b> and an <b>owl</b> in the hieroglyphs. 🦉"},
@@ -468,7 +527,7 @@ function renderStickers(){
   el.innerHTML=`<div class="hero"><div class="pigeon" id="pigeon">🐦</div><div class="bubble" id="fact">${FACTS[factI%FACTS.length]}</div></div>
    <div class="level"><div class="lv">${L[1]} ${L[2]}</div><div style="color:var(--muted);font-size:13px">${t("lvlLine",{n:n,t:T})}${nextL?` · ${t("moreToBecome",{k:nextL[0]-n,lvl:nextL[1]+" "+nextL[2]})}`:" · "+t("collectedAll")}</div>
    <div class="bar"><div style="width:${Math.round(n/T*100)}%"></div></div></div>
-   ${group(t("thuStk"),"thu-")}${group(t("friStk"),"fri-")}${group(t("louStk"),"louvre-")}
+   ${group(t("thuStk"),"thu-")}${group(t("friStk"),"fri-")}${group(t("louStk"),"louvre-")}${group(t("satStk"),"sat-")}
    <div class="book"><h2>${t("bingoTitle")}</h2><div class="bingo">${BINGO.map((b,i)=>`<button class="${sget("bingo-"+i)?"hit":""}" data-bingo="${i}">${b[0]}<small>${b[1]}</small></button>`).join("")}</div>
    <p style="font-size:12.5px;color:var(--muted)">${t("bingoNote")}</p></div>
    <div style="text-align:center"><button class="reset" id="reset">${t("resetBook")}</button></div>`;
@@ -488,7 +547,7 @@ function applyLang(){
   const T=I18N[LANG]; document.documentElement.lang=LANG==="sgs"?"sgs":LANG;
   if(T){
     const put=(dst,src)=>{ if(!src) return; for(const k of ["h","d","kids","tip","story","where"]) if(src[k]!==undefined&&src[k]!==null) dst[k]=src[k]; };
-    for(const k of ["thu","fri"]) if(T.days&&T.days[k]){ const D=T.days[k];
+    for(const k of Object.keys(DAYS)) if(T.days&&T.days[k]){ const D=T.days[k];
       if(D.title) DAYS[k].title=D.title; if(D.blurb) DAYS[k].blurb=D.blurb; if(D.chips) DAYS[k].chips=D.chips;
       (D.stops||[]).forEach((x,j)=>put(DAYS[k].stops[j],x)); }
     (T.louvre||[]).forEach((x,j)=>put(LOUVRE[j],x));
@@ -501,7 +560,7 @@ function applyLang(){
   document.getElementById("h1").innerHTML=t("title");
   document.getElementById("sub").innerHTML=t("sub");
   document.getElementById("footer").textContent=t("footer");
-  document.getElementById("day-info").innerHTML=t("info");
+  document.getElementById("day-info").innerHTML=t("infoSat")+t("info");
   document.querySelectorAll("[data-ui]").forEach(e=>e.innerHTML=t(e.dataset.ui));
   document.getElementById("langs").innerHTML=LANGS.filter(l=>l[0]==="en"||I18N[l[0]]).map(l=>`<button class="lang${l[0]===LANG?" on":""}" data-lang="${l[0]}">${l[1]} ${l[2]}</button>`).join("");
 }
@@ -564,7 +623,7 @@ function bindChecks(el){
 }
 
 /* ---------- live timing ---------- */
-const DAYDATE={thu:"2026-11-12",fri:"2026-11-13"};
+const DAYDATE={thu:"2026-11-12",fri:"2026-11-13",sat:"2026-11-14"};
 const RULES={
  "thu-3":{notBefore:"11:45"},
  "thu-4":{endBy:"17:00",msg:"The Luxembourg Gardens close at about 17:00 in November. Shorten the visit or skip it."},
@@ -574,7 +633,11 @@ const RULES={
  "fri-1":{notBefore:"10:00",startBy:"10:30",msg:"Your Louvre ticket is for 10:00."},
  "fri-2":{notBefore:"11:45"},
  "fri-6":{startBy:"16:45",msg:"Père Lachaise closes at 17:30, so there's little time left. Consider skipping it and going home early."},
- "fri-8":{notBefore:"19:00"}
+ "fri-8":{notBefore:"19:00"},
+ "sat-4":{endBy:"17:00",msg:"The château closes at 17:00 in winter."},
+ "sat-5":{notBefore:"13:00",startBy:"13:15",msg:"Your table at La Capitainerie is at 13:00. If you're late, call +33 6 11 07 01 56."},
+ "sat-6":{endBy:"18:00",msg:"The park closes at about 18:00 in winter."},
+ "sat-7":{startBy:"16:15",endBy:"17:00",msg:"The Great Stables close at 17:00 in winter, so go now or skip."}
 };
 const toMin=t=>{const [h,m]=t.split(":").map(Number);return h*60+m;};
 const fmt=m=>{m=Math.round(m);return String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(((m%60)+60)%60).padStart(2,"0");};
@@ -695,7 +758,7 @@ document.addEventListener("click",e=>{
   else if(act==="edit-done"){ const v=askTime(t("askDone"), tget("done-t-"+id)); if(v!==undefined) setT("done-t-"+id,v); }
   renderTimeline(key);
 });
-setInterval(()=>{ ["thu","fri"].forEach(k=>{ if(todayStr()===DAYDATE[k]) renderTimeline(k); }); },60000);
+setInterval(()=>{ ["thu","fri","sat"].forEach(k=>{ if(todayStr()===DAYDATE[k]) renderTimeline(k); }); },60000);
 
 function renderLouvre(){
   const el=document.getElementById("day-louvre");
@@ -718,7 +781,7 @@ function renderLouvre(){
 }
 
 applyLang();
-render("thu"); render("fri"); renderLouvre();
+render("thu"); render("fri"); render("sat"); renderLouvre();
 const MAPS={};
 const PINCOL={sight:"#1f3a5f",food:"#c8423b",play:"#2f7d5b",home:"#b98b2e"};
 function initMap(key){
@@ -748,10 +811,11 @@ function initMap(key){
     pts.push([s.p.lat,s.p.lon]);
   });
   L.polyline(pts,{color:"#1d2433",weight:2,opacity:.5,dashArray:"5 6"}).addTo(m);
-  m.fitBounds(pts,{padding:[30,30]});
-  m._pts=pts;
+  const fit = key==="sat" ? pts.filter(q=>q[0]>49) : pts;
+  m.fitBounds(fit,{padding:[30,30]});
+  m._pts=fit;
   MAPS[key]=m;
-  setTimeout(()=>{m.invalidateSize();m.fitBounds(pts,{padding:[30,30]});},300);
+  setTimeout(()=>{m.invalidateSize();m.fitBounds(fit,{padding:[30,30]});},300);
 }
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-locate]"); if(!b) return;
@@ -781,7 +845,7 @@ window.addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(doc
 (function(){
   const h=location.hash.slice(1);
   const now=new Date(); const ds=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-  const key = document.getElementById("day-"+h) ? h : (ds==="2026-11-13" ? "fri" : "thu");
+  const key = document.getElementById("day-"+h) ? h : (ds==="2026-11-13" ? "fri" : ds==="2026-11-14" ? "sat" : "thu");
   show(key);
 })();
 </script>
